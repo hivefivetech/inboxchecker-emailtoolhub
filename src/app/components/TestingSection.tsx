@@ -3,19 +3,19 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import GmailImage from "@/app/assets/images/gmail.png";
-import YahooImage from "@/app/assets/images/yahoo.png";
+import GmailImage from "../assets/images/gmail.png";
+import YahooImage from "../assets/images/yahoo.png";
 
 const fetchEmailsFromServer = async () => {
     try {
-        console.log('Here')
+        // console.log('Here')
         const response = await fetch("/api/emails");
-        console.log('response: ', response)
+        // console.log('response: ', response)
         if (!response.ok) {
             throw new Error(`Error: ${response.statusText}`);
         }
         const data = await response.json();
-        console.log('data: ', data)
+        // console.log('data: ', data)
         if (data.success) {
             return {
                 gmailuser1: data.emails.gmailuser1.map((email: any) => ({
