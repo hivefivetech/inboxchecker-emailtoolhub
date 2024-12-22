@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import GmailImage from "../assets/images/gmail.png";
-import YahooImage from "../assets/images/yahoo.png";
+// import GmailImage from "../assets/images/gmail.png";
+// import YahooImage from "../assets/images/yahoo.png";
 
 const fetchEmailsFromServer = async () => {
     try {
