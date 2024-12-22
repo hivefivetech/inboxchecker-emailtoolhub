@@ -86,6 +86,9 @@ export default function TestingSection() {
     const [selectedTabYahoo, setSelectedTabYahoo] = useState("Inbox");
     const [searchQuery, setSearchQuery] = useState("");
 
+    const gmailImage = 'https://i.ibb.co/qp50x6m/gmail.png';
+    const yahooImage = 'https://i.ibb.co/xX18gtR/yahoo.png';
+
     const tabs = [
         { label: "Inbox", value: "Inbox" },
         { label: "Spam", value: "Spam" },
@@ -179,7 +182,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser1}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser1}
-                    image={GmailImage}
+                    image={gmailImage}
                 />
 
                 {/* Second Email Section */}
@@ -189,7 +192,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser2}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser2}
-                    image={GmailImage}
+                    image={gmailImage}
                 />
 
                 {/* Third Email Section */}
@@ -199,7 +202,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser3}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser3}
-                    image={GmailImage}
+                    image={gmailImage}
                 />
 
                 {/* Yahoo Email Section */}
@@ -209,7 +212,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabYahoo}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsYahoo}
-                    image={YahooImage}
+                    image={yahooImage}
                 />
             </div>
         </section>
