@@ -8,6 +8,7 @@ import YahooImage from "@/app/assets/images/yahoo.png";
 
 const fetchEmailsFromServer = async () => {
     try {
+        console.log('Here')
         const response = await fetch("/api/emails");
         console.log('response: ', response)
         if (!response.ok) {
