@@ -48,6 +48,16 @@ const fetchEmailsFromServer = async () => {
                     status: email.status,
                     date: new Date(email.date),
                 })),
+                gmailuser4: data.emails.gmailuser4.map((email: any) => ({
+                    name: email.from?.name || "Unknown Sender",
+                    email: email.from?.address || "Unknown Email",
+                    maskedEmail: email.from?.address
+                        ? email.from.address.replace(/@(.*)\./, "@*****.")
+                        : "Unknown Email",
+                    subject: email.subject || "No Subject",
+                    status: email.status,
+                    date: new Date(email.date),
+                })),
                 yahoo: data.emails.yahoo.map((email: any) => ({
                     name: email.from?.name || "Unknown Sender",
                     email: email.from?.address || "Unknown Email",
@@ -60,10 +70,10 @@ const fetchEmailsFromServer = async () => {
                 })),
             };
         }
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], yahoo: [] };
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], yahoo: [] };
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], yahoo: [] };
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], yahoo: [] };
     }
 };
 
@@ -77,12 +87,16 @@ export default function TestingSection() {
     const [resultsUser3, setResultsUser3] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
+    const [resultsUser4, setResultsUser4] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
     const [resultsYahoo, setResultsYahoo] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
     const [selectedTabUser1, setSelectedTabUser1] = useState("Inbox");
     const [selectedTabUser2, setSelectedTabUser2] = useState("Inbox");
     const [selectedTabUser3, setSelectedTabUser3] = useState("Inbox");
+    const [selectedTabUser4, setSelectedTabUser4] = useState("Inbox");
     const [selectedTabYahoo, setSelectedTabYahoo] = useState("Inbox");
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -96,10 +110,11 @@ export default function TestingSection() {
 
     useEffect(() => {
         const fetchEmails = async () => {
-            const { gmailuser1, gmailuser2, gmailuser3, yahoo } = await fetchEmailsFromServer();
+            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, yahoo } = await fetchEmailsFromServer();
             setResultsUser1(gmailuser1);
             setResultsUser2(gmailuser2);
             setResultsUser3(gmailuser3);
+            setResultsUser4(gmailuser4);
             setResultsYahoo(yahoo);
         };
 
@@ -128,6 +143,14 @@ export default function TestingSection() {
 
     const filteredTabResultsUser3 = resultsUser3.filter((email) => {
         const matchesTab = email.status === selectedTabUser3;
+        const matchesSearch =
+            email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.email.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesTab && matchesSearch;
+    });
+
+    const filteredTabResultsUser4 = resultsUser4.filter((email) => {
+        const matchesTab = email.status === selectedTabUser4;
         const matchesSearch =
             email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             email.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -202,6 +225,16 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser3}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser3}
+                    image={gmailImage}
+                />
+
+                {/* Fourth Email Section */}
+                <EmailSection
+                    accountEmail="foodazmaofficial@gmail.com"
+                    selectedTab={selectedTabUser4}
+                    setSelectedTab={setSelectedTabUser4}
+                    tabs={tabs}
+                    filteredTabResults={filteredTabResultsUser4}
                     image={gmailImage}
                 />
 

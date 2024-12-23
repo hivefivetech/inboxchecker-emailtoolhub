@@ -106,6 +106,12 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         folders
     );
 
+    const gmailuser4Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_GMAIL_FOURTH!,
+        process.env.IMAP_PASSWORD_GMAIL_FOURTH!,
+        folders
+    );
+
     const yahooFolders = ["Inbox", "Bulk"];
     const yahooEmails = await fetchEmailsForAccount(
         process.env.IMAP_USER_YAHOO_FIRST!,
@@ -117,6 +123,7 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         gmailuser1: gmailuser1Emails,
         gmailuser2: gmailuser2Emails,
         gmailuser3: gmailuser3Emails,
+        gmailuser4: gmailuser4Emails,
         yahoo: yahooEmails,
     };
 }

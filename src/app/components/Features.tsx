@@ -8,6 +8,7 @@ const randomEmails = [
     "wardenleon484@gmail.com",
     "thomasadward5@gmail.com",
     "stellajamsonusa@gmail.com",
+    "foodazmaofficial@gmail.com",
     "syedtestm@yahoo.com",
 ];
 
