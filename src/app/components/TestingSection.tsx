@@ -61,22 +61,52 @@ const fetchEmailsFromServer = async () => {
                     status: email.status,
                     date: new Date(email.date),
                 })),
-                yahoo: data.emails.yahoo.map((email: any) => ({
+                gmailuser5: data.emails.gmailuser5.map((email: any) => ({
                     name: email.from?.name || "Unknown Sender",
                     email: email.from?.address || "Unknown Email",
                     maskedEmail: email.from?.address
                         ? email.from.address.replace(/@(.*)\./, "@*****.")
                         : "Unknown Email",
                     subject: email.subject || "No Subject",
-                    status: email.status || "Inbox", // Default to "Inbox" if status is missing
+                    status: email.status,
+                    date: new Date(email.date),
+                })),
+                gmailuser6: data.emails.gmailuser6.map((email: any) => ({
+                    name: email.from?.name || "Unknown Sender",
+                    email: email.from?.address || "Unknown Email",
+                    maskedEmail: email.from?.address
+                        ? email.from.address.replace(/@(.*)\./, "@*****.")
+                        : "Unknown Email",
+                    subject: email.subject || "No Subject",
+                    status: email.status,
+                    date: new Date(email.date),
+                })),
+                yahoouser1: data.emails.yahoouser1.map((email: any) => ({
+                    name: email.from?.name || "Unknown Sender",
+                    email: email.from?.address || "Unknown Email",
+                    maskedEmail: email.from?.address
+                        ? email.from.address.replace(/@(.*)\./, "@*****.")
+                        : "Unknown Email",
+                    subject: email.subject || "No Subject",
+                    status: email.status || "Inbox",
+                    date: new Date(email.date),
+                })),
+                yahoouser2: data.emails.yahoouser2.map((email: any) => ({
+                    name: email.from?.name || "Unknown Sender",
+                    email: email.from?.address || "Unknown Email",
+                    maskedEmail: email.from?.address
+                        ? email.from.address.replace(/@(.*)\./, "@*****.")
+                        : "Unknown Email",
+                    subject: email.subject || "No Subject",
+                    status: email.status || "Inbox",
                     date: new Date(email.date),
                 })),
             };
         }
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], yahoo: [] };
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], yahoouser1: [], yahoouser2: [] };
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], yahoo: [] };
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], yahoouser1: [], yahoouser2: [] };
     }
 };
 
@@ -93,14 +123,26 @@ export default function TestingSection() {
     const [resultsUser4, setResultsUser4] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
-    const [resultsYahoo, setResultsYahoo] = useState<
+    const [resultsUser5, setResultsUser5] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
+    const [resultsUser6, setResultsUser6] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
+    const [resultsYahooUser1, setResultsYahooUser1] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
+    const [resultsYahooUser2, setResultsYahooUser2] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
     const [selectedTabUser1, setSelectedTabUser1] = useState("Inbox");
     const [selectedTabUser2, setSelectedTabUser2] = useState("Inbox");
     const [selectedTabUser3, setSelectedTabUser3] = useState("Inbox");
     const [selectedTabUser4, setSelectedTabUser4] = useState("Inbox");
-    const [selectedTabYahoo, setSelectedTabYahoo] = useState("Inbox");
+    const [selectedTabUser5, setSelectedTabUser5] = useState("Inbox");
+    const [selectedTabUser6, setSelectedTabUser6] = useState("Inbox");
+    const [selectedTabYahooUser1, setSelectedTabYahooUser1] = useState("Inbox");
+    const [selectedTabYahooUser2, setSelectedTabYahooUser2] = useState("Inbox");
     const [searchQuery, setSearchQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isRealtimeLoader, setIsRealtimeLoader] = useState(true);
@@ -120,12 +162,15 @@ export default function TestingSection() {
                 setIsLoading(true);
             }
             setIsRealtimeLoader(true);
-            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, yahoo } = await fetchEmailsFromServer();
+            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, yahoouser1, yahoouser2 } = await fetchEmailsFromServer();
             setResultsUser1(gmailuser1);
             setResultsUser2(gmailuser2);
             setResultsUser3(gmailuser3);
             setResultsUser4(gmailuser4);
-            setResultsYahoo(yahoo);
+            setResultsUser5(gmailuser5);
+            setResultsUser6(gmailuser6);
+            setResultsYahooUser1(yahoouser1);
+            setResultsYahooUser2(yahoouser2);
             setIsLoading(false);
             setIsFirstLoad(false);
             setIsRealtimeLoader(false);
@@ -170,8 +215,32 @@ export default function TestingSection() {
         return matchesTab && matchesSearch;
     });
 
-    const filteredTabResultsYahoo = resultsYahoo.filter((email) => {
-        const matchesTab = email.status === selectedTabYahoo;
+    const filteredTabResultsUser5 = resultsUser5.filter((email) => {
+        const matchesTab = email.status === selectedTabUser5;
+        const matchesSearch =
+            email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.email.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesTab && matchesSearch;
+    });
+
+    const filteredTabResultsUser6 = resultsUser6.filter((email) => {
+        const matchesTab = email.status === selectedTabUser6;
+        const matchesSearch =
+            email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.email.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesTab && matchesSearch;
+    });
+
+    const filteredTabResultsYahooUser1 = resultsYahooUser1.filter((email) => {
+        const matchesTab = email.status === selectedTabYahooUser1;
+        const matchesSearch =
+            email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.email.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesTab && matchesSearch;
+    });
+
+    const filteredTabResultsYahooUser2 = resultsYahooUser2.filter((email) => {
+        const matchesTab = email.status === selectedTabYahooUser2;
         const matchesSearch =
             email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             email.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -263,14 +332,53 @@ export default function TestingSection() {
                     isRealtimeLoader={isRealtimeLoader}
                 />
 
-                {/* Yahoo Email Section */}
+                {/* Fifth Email Section */}
+                <EmailSection
+                    accountEmail="watsonjetpeter@gmail.com"
+                    ageOfEmail="7 Years Old Email"
+                    selectedTab={selectedTabUser5}
+                    setSelectedTab={setSelectedTabUser5}
+                    tabs={tabs}
+                    filteredTabResults={filteredTabResultsUser5}
+                    image={gmailImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
+                />
+
+                {/* Sixth Email Section */}
+                <EmailSection
+                    accountEmail="dcruzjovita651@gmail.com"
+                    ageOfEmail="3 Years Old Email"
+                    selectedTab={selectedTabUser6}
+                    setSelectedTab={setSelectedTabUser6}
+                    tabs={tabs}
+                    filteredTabResults={filteredTabResultsUser6}
+                    image={gmailImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
+                />
+
+                {/* Yahoo User 1 Email Section */}
                 <EmailSection
                     accountEmail="syedtestm@yahoo.com"
                     ageOfEmail="4 Years Old"
-                    selectedTab={selectedTabYahoo}
-                    setSelectedTab={setSelectedTabYahoo}
+                    selectedTab={selectedTabYahooUser1}
+                    setSelectedTab={setSelectedTabYahooUser1}
                     tabs={tabs}
-                    filteredTabResults={filteredTabResultsYahoo}
+                    filteredTabResults={filteredTabResultsYahooUser1}
+                    image={yahooImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
+                />
+
+                {/* Yahoo User 2 Email Section */}
+                <EmailSection
+                    accountEmail="vexabyteofficial@yahoo.com"
+                    ageOfEmail="8 Years Old"
+                    selectedTab={selectedTabYahooUser2}
+                    setSelectedTab={setSelectedTabYahooUser2}
+                    tabs={tabs}
+                    filteredTabResults={filteredTabResultsYahooUser2}
                     image={yahooImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}

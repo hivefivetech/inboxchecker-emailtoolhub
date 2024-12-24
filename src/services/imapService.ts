@@ -112,10 +112,28 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         folders
     );
 
+    const gmailuser5Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_GMAIL_FIFTH!,
+        process.env.IMAP_PASSWORD_GMAIL_FIFTH!,
+        folders
+    );
+
+    const gmailuser6Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_GMAIL_SIXTH!,
+        process.env.IMAP_PASSWORD_GMAIL_SIXTH!,
+        folders
+    );
+
     const yahooFolders = ["Inbox", "Bulk"];
-    const yahooEmails = await fetchEmailsForAccount(
+    const yahoouser1Emails = await fetchEmailsForAccount(
         process.env.IMAP_USER_YAHOO_FIRST!,
         process.env.IMAP_PASSWORD_YAHOO_FIRST!,
+        yahooFolders
+    );
+
+    const yahoouser2Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_YAHOO_SECOND!,
+        process.env.IMAP_PASSWORD_YAHOO_SECOND!,
         yahooFolders
     );
 
@@ -124,6 +142,9 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         gmailuser2: gmailuser2Emails,
         gmailuser3: gmailuser3Emails,
         gmailuser4: gmailuser4Emails,
-        yahoo: yahooEmails,
+        gmailuser5: gmailuser5Emails,
+        gmailuser6: gmailuser6Emails,
+        yahoouser1: yahoouser1Emails,
+        yahoouser2: yahoouser2Emails,
     };
 }

@@ -9,7 +9,10 @@ const randomEmails = [
     "thomasadward5@gmail.com",
     "stellajamsonusa@gmail.com",
     "foodazmaofficial@gmail.com",
+    "watsonjetpeter@gmail.com",
+    "dcruzjovita651@gmail.com",
     "syedtestm@yahoo.com",
+    "vexabyteofficial@yahoo.com",
 ];
 
 export default function Features() {
