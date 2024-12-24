@@ -14,13 +14,13 @@ const randomEmails = [
 
 export default function Features() {
     const [showPrompt, setShowPrompt] = useState(false);
-    const [numEmails, setNumEmails] = useState(0);
+    const [numEmails, setNumEmails] = useState<number | null>(0);
     const [generatedEmails, setGeneratedEmails] = useState<string[]>([]);
 
     const handleGenerateEmails = () => {
         const emails = randomEmails
             .sort(() => 0.5 - Math.random())
-            .slice(0, numEmails);
+            .slice(0, numEmails || randomEmails.length);
         setGeneratedEmails(emails);
     };
 
@@ -58,25 +58,43 @@ export default function Features() {
                                 initial={{ opacity: 0, y: 50 }}
                                 animate={{ opacity: 1, y: 0 }}
                                 exit={{ opacity: 0, y: 50 }}
-                                className="mt-8 bg-white text-gray-800 p-6 rounded-lg shadow-lg mx-auto w-full sm:w-1/2"
+                                className="mt-8 bg-white text-gray-800 p-6 rounded-lg shadow-lg mx-auto w-full sm:w-3/4 lg:w-1/2"
                             >
                                 <h2 className="text-xl font-bold mb-4">How many emails to generate?</h2>
                                 <input
                                     type="number"
-                                    value={numEmails}
-                                    onChange={(e) => setNumEmails(Number(e.target.value))}
+                                    value={numEmails ?? ""}
+                                    onChange={(e) => {
+                                        const value = e.target.value;
+                                        setNumEmails(value === "" ? null : Number(value));
+                                    }}
                                     className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
                                     placeholder="Enter a number"
                                 />
-                                <button
-                                    onClick={() => {
-                                        handleGenerateEmails();
-                                        setShowPrompt(false);
-                                    }}
-                                    className="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition hover:-translate-y-1"
-                                >
-                                    Generate Emails
-                                </button>
+                                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
+                                    <button
+                                        onClick={() => {
+                                            if (numEmails === null || numEmails <= 0) {
+                                                alert("Please enter a number to generate emails.");
+                                                return;
+                                            }
+                                            handleGenerateEmails();
+                                            setShowPrompt(false);
+                                        }}
+                                        className="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition hover:-translate-y-1"
+                                    >
+                                        Generate Emails
+                                    </button>
+                                    <button
+                                        onClick={() => {
+                                            setGeneratedEmails(randomEmails);
+                                            setShowPrompt(false);
+                                        }}
+                                        className="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition hover:-translate-y-1"
+                                    >
+                                        Generate All
+                                    </button>
+                                </div>
                             </motion.div>
                         )}
                     </AnimatePresence>
@@ -114,7 +132,7 @@ export default function Features() {
                         <div className="mt-6">
                             <button
                                 onClick={handleCopyAll}
-                                className="px-6 py-3 bg-green-600 text-white font-medium rounded-full hover:bg-green-700 transition transform hover:scale-105"
+                                className="px-6 py-3 bg-teal-500 text-white font-medium rounded-full hover:bg-teal-600 transition transform hover:scale-105"
                             >
                                 Copy All Emails
                             </button>
