@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { FaSpinner } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa6";
+import { TbLoader3 } from "react-icons/tb";
 // import GmailImage from "../assets/images/gmail.png";
 // import YahooImage from "../assets/images/yahoo.png";
 
@@ -99,6 +102,9 @@ export default function TestingSection() {
     const [selectedTabUser4, setSelectedTabUser4] = useState("Inbox");
     const [selectedTabYahoo, setSelectedTabYahoo] = useState("Inbox");
     const [searchQuery, setSearchQuery] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [isRealtimeLoader, setIsRealtimeLoader] = useState(true);
+    const [isFirstLoad, setIsFirstLoad] = useState(true);
 
     const gmailImage = 'https://i.ibb.co/qp50x6m/gmail.png';
     const yahooImage = 'https://i.ibb.co/xX18gtR/yahoo.png';
@@ -110,12 +116,19 @@ export default function TestingSection() {
 
     useEffect(() => {
         const fetchEmails = async () => {
+            if (isFirstLoad) {
+                setIsLoading(true);
+            }
+            setIsRealtimeLoader(true);
             const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, yahoo } = await fetchEmailsFromServer();
             setResultsUser1(gmailuser1);
             setResultsUser2(gmailuser2);
             setResultsUser3(gmailuser3);
             setResultsUser4(gmailuser4);
             setResultsYahoo(yahoo);
+            setIsLoading(false);
+            setIsFirstLoad(false);
+            setIsRealtimeLoader(false);
         };
 
         fetchEmails();
@@ -201,51 +214,66 @@ export default function TestingSection() {
                 {/* First Email Section */}
                 <EmailSection
                     accountEmail="wardenleon484@gmail.com"
+                    ageOfEmail="9 Years Old Email"
                     selectedTab={selectedTabUser1}
                     setSelectedTab={setSelectedTabUser1}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser1}
                     image={gmailImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
                 />
 
                 {/* Second Email Section */}
                 <EmailSection
                     accountEmail="thomasadward5@gmail.com"
+                    ageOfEmail="6 Years Old Email"
                     selectedTab={selectedTabUser2}
                     setSelectedTab={setSelectedTabUser2}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser2}
                     image={gmailImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
                 />
 
                 {/* Third Email Section */}
                 <EmailSection
                     accountEmail="stellajamsonusa@gmail.com"
+                    ageOfEmail="7 Years Old Email"
                     selectedTab={selectedTabUser3}
                     setSelectedTab={setSelectedTabUser3}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser3}
                     image={gmailImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
                 />
 
                 {/* Fourth Email Section */}
                 <EmailSection
                     accountEmail="foodazmaofficial@gmail.com"
+                    ageOfEmail="5 Years Old Email"
                     selectedTab={selectedTabUser4}
                     setSelectedTab={setSelectedTabUser4}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser4}
                     image={gmailImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
                 />
 
                 {/* Yahoo Email Section */}
                 <EmailSection
                     accountEmail="syedtestm@yahoo.com"
+                    ageOfEmail="4 Years Old"
                     selectedTab={selectedTabYahoo}
                     setSelectedTab={setSelectedTabYahoo}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsYahoo}
                     image={yahooImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
                 />
             </div>
         </section>
@@ -254,31 +282,68 @@ export default function TestingSection() {
 
 function EmailSection({
     accountEmail,
+    ageOfEmail,
     selectedTab,
     setSelectedTab,
     tabs,
     filteredTabResults,
     image,
+    isLoading,
+    isRealtimeLoader,
 }: {
     accountEmail: string;
+    ageOfEmail: string,
     selectedTab: string;
     setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
     tabs: { label: string; value: string }[];
     filteredTabResults: { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[];
     image: any;
+    isLoading: boolean;
+    isRealtimeLoader: boolean;
 }) {
     return (
         <div
             className={`max-w-4xl mx-auto shadow-lg rounded-lg p-6 mb-5 
                 ${selectedTab === "Inbox" ? "bg-green-50" : "bg-red-50"}`}
         >
-            <div className="text-center mb-6">
+            <div className="text-center mb-1">
                 <h2 className="text-md sm:text-2xl font-bold text-gray-800">
                     Results for:{" "}
                     <span className={`${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"}`}>
                         {accountEmail}
                     </span>
                 </h2>
+
+                <p className={`${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"} text-sm sm:text-md font-semibold`}>
+                    {ageOfEmail}
+                </p>
+            </div>
+
+            {/* Realtime Loader */}
+            <div className="flex justify-end items-end mb-2">
+                {isRealtimeLoader ? (
+                    <motion.div
+                        className={`${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"} flex justify-center items-center`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        title="Realtime Fetching"
+                    >
+                        <TbLoader3 className="animate-spin text-xl" />
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        className={`${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"} flex justify-center items-center`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        title="Fetched"
+                    >
+                        <FaCheck className="text-xl" />
+                    </motion.div>
+                )}
             </div>
 
             <div className="flex justify-between rounded-lg shadow-inner mb-6">
@@ -302,7 +367,20 @@ function EmailSection({
                 className={`space-y-4 p-3 rounded-lg shadow-md ${selectedTab === "Inbox" ? "bg-green-100" : "bg-red-100"
                     }`}
             >
-                {filteredTabResults.length > 0 ? (
+                {isLoading ? (
+                    <motion.div
+                        className="flex justify-center items-center h-32"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <FaSpinner
+                            className={`animate-spin text-4xl ${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"
+                                }`}
+                        />
+                    </motion.div>
+                ) : filteredTabResults.length > 0 ? (
                     <div className="max-h-96 overflow-y-auto">
                         <AnimatePresence>
                             {filteredTabResults.map((result, index) => (
@@ -359,6 +437,7 @@ function EmailSection({
                     </p>
                 )}
             </div>
+
         </div>
     );
 }
