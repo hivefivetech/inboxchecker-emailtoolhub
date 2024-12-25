@@ -129,6 +129,12 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         folders
     );
 
+    const gmailuser7Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_GMAIL_SEVENTH!,
+        process.env.IMAP_PASSWORD_GMAIL_SEVENTH!,
+        folders
+    );
+
     // Yahoo
     const yahooFolders = ["Inbox", "Bulk"];
     const yahoouser1Emails = await fetchEmailsForAccount(
@@ -151,6 +157,18 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         zohoFolders
     );
 
+    const zohouser2Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_ZOHO_SECOND!,
+        process.env.IMAP_PASSWORD_ZOHO_SECOND!,
+        zohoFolders
+    );
+
+    const zohouser3Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_ZOHO_THIRD!,
+        process.env.IMAP_PASSWORD_ZOHO_THIRD!,
+        zohoFolders
+    );
+
     return {
         gmailuser1: gmailuser1Emails,
         gmailuser2: gmailuser2Emails,
@@ -158,8 +176,11 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         gmailuser4: gmailuser4Emails,
         gmailuser5: gmailuser5Emails,
         gmailuser6: gmailuser6Emails,
+        gmailuser7: gmailuser7Emails,
         yahoouser1: yahoouser1Emails,
         yahoouser2: yahoouser2Emails,
         zohouser1: zohouser1Emails,
+        zohouser2: zohouser2Emails,
+        zohouser3: zohouser3Emails,
     };
 }

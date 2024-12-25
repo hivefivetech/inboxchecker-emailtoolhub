@@ -22,6 +22,7 @@ const fetchEmailsFromServer = async () => {
         // console.log('data: ', data)
         if (data.success) {
             return {
+                // GMAIL
                 gmailuser1: data.emails.gmailuser1.map((email: any) => ({
                     name: email.from?.name || "Unknown Sender",
                     email: email.from?.address || "Unknown Email",
@@ -82,6 +83,18 @@ const fetchEmailsFromServer = async () => {
                     status: email.status,
                     date: new Date(email.date),
                 })),
+                gmailuser7: data.emails.gmailuser7.map((email: any) => ({
+                    name: email.from?.name || "Unknown Sender",
+                    email: email.from?.address || "Unknown Email",
+                    maskedEmail: email.from?.address
+                        ? email.from.address.replace(/@(.*)\./, "@*****.")
+                        : "Unknown Email",
+                    subject: email.subject || "No Subject",
+                    status: email.status,
+                    date: new Date(email.date),
+                })),
+
+                // YAHOO
                 yahoouser1: data.emails.yahoouser1.map((email: any) => ({
                     name: email.from?.name || "Unknown Sender",
                     email: email.from?.address || "Unknown Email",
@@ -102,7 +115,29 @@ const fetchEmailsFromServer = async () => {
                     status: email.status || "Inbox",
                     date: new Date(email.date),
                 })),
+
+                // ZOHO
                 zohouser1: data.emails.zohouser1.map((email: any) => ({
+                    name: email.from?.name || "Unknown Sender",
+                    email: email.from?.address || "Unknown Email",
+                    maskedEmail: email.from?.address
+                        ? email.from.address.replace(/@(.*)\./, "@*****.")
+                        : "Unknown Email",
+                    subject: email.subject || "No Subject",
+                    status: email.status || "Inbox",
+                    date: new Date(email.date),
+                })),
+                zohouser2: data.emails.zohouser2.map((email: any) => ({
+                    name: email.from?.name || "Unknown Sender",
+                    email: email.from?.address || "Unknown Email",
+                    maskedEmail: email.from?.address
+                        ? email.from.address.replace(/@(.*)\./, "@*****.")
+                        : "Unknown Email",
+                    subject: email.subject || "No Subject",
+                    status: email.status || "Inbox",
+                    date: new Date(email.date),
+                })),
+                zohouser3: data.emails.zohouser3.map((email: any) => ({
                     name: email.from?.name || "Unknown Sender",
                     email: email.from?.address || "Unknown Email",
                     maskedEmail: email.from?.address
@@ -114,10 +149,10 @@ const fetchEmailsFromServer = async () => {
                 })),
             };
         }
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], yahoouser1: [], yahoouser2: [], zohouser1: [] };
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [] };
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], yahoouser1: [], yahoouser2: [], zohouser1: [] };
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [] };
     }
 };
 
@@ -141,6 +176,9 @@ export default function TestingSection() {
     const [resultsUser6, setResultsUser6] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
+    const [resultsUser7, setResultsUser7] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
     // Yahoo
     const [resultsYahooUser1, setResultsYahooUser1] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
@@ -152,20 +190,29 @@ export default function TestingSection() {
     const [resultsZohoUser1, setResultsZohoUser1] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
+    const [resultsZohoUser2, setResultsZohoUser2] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
+    const [resultsZohoUser3, setResultsZohoUser3] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
     const [selectedTabUser1, setSelectedTabUser1] = useState("Inbox");
     const [selectedTabUser2, setSelectedTabUser2] = useState("Inbox");
     const [selectedTabUser3, setSelectedTabUser3] = useState("Inbox");
     const [selectedTabUser4, setSelectedTabUser4] = useState("Inbox");
     const [selectedTabUser5, setSelectedTabUser5] = useState("Inbox");
     const [selectedTabUser6, setSelectedTabUser6] = useState("Inbox");
+    const [selectedTabUser7, setSelectedTabUser7] = useState("Inbox");
     const [selectedTabYahooUser1, setSelectedTabYahooUser1] = useState("Inbox");
     const [selectedTabYahooUser2, setSelectedTabYahooUser2] = useState("Inbox");
     const [selectedTabZohoUser1, setSelectedTabZohoUser1] = useState("Inbox");
+    const [selectedTabZohoUser2, setSelectedTabZohoUser2] = useState("Inbox");
+    const [selectedTabZohoUser3, setSelectedTabZohoUser3] = useState("Inbox");
     const [searchQuery, setSearchQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isRealtimeLoader, setIsRealtimeLoader] = useState(true);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
-    
+
     const tabs = [
         { label: "Inbox", value: "Inbox" },
         { label: "Spam", value: "Spam" },
@@ -177,16 +224,19 @@ export default function TestingSection() {
                 setIsLoading(true);
             }
             setIsRealtimeLoader(true);
-            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, yahoouser1, yahoouser2, zohouser1 } = await fetchEmailsFromServer();
+            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, gmailuser7, yahoouser1, yahoouser2, zohouser1, zohouser2, zohouser3 } = await fetchEmailsFromServer();
             setResultsUser1(gmailuser1);
             setResultsUser2(gmailuser2);
             setResultsUser3(gmailuser3);
             setResultsUser4(gmailuser4);
             setResultsUser5(gmailuser5);
             setResultsUser6(gmailuser6);
+            setResultsUser7(gmailuser7);
             setResultsYahooUser1(yahoouser1);
             setResultsYahooUser2(yahoouser2);
             setResultsZohoUser1(zohouser1);
+            setResultsZohoUser2(zohouser2);
+            setResultsZohoUser3(zohouser3);
             setIsLoading(false);
             setIsFirstLoad(false);
             setIsRealtimeLoader(false);
@@ -248,6 +298,14 @@ export default function TestingSection() {
         return matchesTab && matchesSearch;
     });
 
+    const filteredTabResultsUser7 = resultsUser7.filter((email) => {
+        const matchesTab = email.status === selectedTabUser7;
+        const matchesSearch =
+            email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.email.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesTab && matchesSearch;
+    });
+
     // Yahoo
     const filteredTabResultsYahooUser1 = resultsYahooUser1.filter((email) => {
         const matchesTab = email.status === selectedTabYahooUser1;
@@ -268,6 +326,22 @@ export default function TestingSection() {
     // Zoho
     const filteredTabResultsZohoUser1 = resultsZohoUser1.filter((email) => {
         const matchesTab = email.status === selectedTabZohoUser1;
+        const matchesSearch =
+            email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.email.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesTab && matchesSearch;
+    });
+
+    const filteredTabResultsZohoUser2 = resultsZohoUser2.filter((email) => {
+        const matchesTab = email.status === selectedTabZohoUser2;
+        const matchesSearch =
+            email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.email.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesTab && matchesSearch;
+    });
+
+    const filteredTabResultsZohoUser3 = resultsZohoUser3.filter((email) => {
+        const matchesTab = email.status === selectedTabZohoUser3;
         const matchesSearch =
             email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             email.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -386,6 +460,19 @@ export default function TestingSection() {
                     isRealtimeLoader={isRealtimeLoader}
                 />
 
+                {/* Seventh Email Section */}
+                <EmailSection
+                    accountEmail="doctsashawn@gmail.com"
+                    ageOfEmail="5 Years Old Email"
+                    selectedTab={selectedTabUser7}
+                    setSelectedTab={setSelectedTabUser7}
+                    tabs={tabs}
+                    filteredTabResults={filteredTabResultsUser7}
+                    image={GmailImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
+                />
+
                 {/* YAHOO */}
                 {/* Yahoo User 1 Email Section */}
                 <EmailSection
@@ -422,6 +509,30 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabZohoUser1}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsZohoUser1}
+                    image={ZohoImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
+                />
+
+                <EmailSection
+                    accountEmail="rollyriders@zohomail.in"
+                    ageOfEmail="4 Years Old"
+                    selectedTab={selectedTabZohoUser2}
+                    setSelectedTab={setSelectedTabZohoUser2}
+                    tabs={tabs}
+                    filteredTabResults={filteredTabResultsZohoUser2}
+                    image={ZohoImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
+                />
+
+                <EmailSection
+                    accountEmail="pollywilmar@zohomail.in"
+                    ageOfEmail="7 Years Old"
+                    selectedTab={selectedTabZohoUser3}
+                    setSelectedTab={setSelectedTabZohoUser3}
+                    tabs={tabs}
+                    filteredTabResults={filteredTabResultsZohoUser3}
                     image={ZohoImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
