@@ -12,20 +12,21 @@ export default function HeroSection() {
         >
             <div className="max-w-5xl mx-auto text-center">
                 <h1 className="text-3xl sm:text-5xl font-bold mb-6">
-                    Is Your Email Landing in the <span className="text-teal-500">Right Folder?</span>
+                    Ensure Your Emails Land in the <span className='text-teal-500'>Primary Inbox</span> Every Time!
                 </h1>
                 <p className="text-lg sm:text-xl mb-6">
-                    Welcome to <span className="font-bold">InboxChecker</span> — the easiest way to test where your email ends up. Whether it’s <span className="font-bold">Inbox</span>, <span className="font-bold">Spam</span>, <span className="font-bold">Promotions</span>, or <span className="font-bold">Updates</span>, we’ve got you covered.
+                    Welcome to <span className='font-bold'>EmailToolHub Inbox Checker</span> — your go-to tool for testing email deliverability. Find out whether your email lands in <span className='font-bold'>Inbox</span> or <span className='font-bold'>Spam</span> with ease.
                 </p>
                 <p className="text-base sm:text-lg mb-8">
                     Our *advanced IMAP analysis* helps you understand your email’s deliverability and pinpoint issues that might be keeping it out of the <span className="font-bold">Inbox</span>. *Get instant insights and take control of your email campaigns!*
                 </p>
-                <div className="flex flex-col sm:flex-row justify-center gap-4">
-                    <button className="px-6 py-3 bg-teal-500 text-white font-medium rounded-full hover:bg-teal-600 transition transform hover:scale-105">
-                        <span className="font-bold">Check Your Email Now</span>
-                    </button>
+                <div className="flex justify-center gap-4">
                     <button className="px-6 py-3 bg-gray-200 text-gray-800 font-medium rounded-full hover:bg-gray-300 transition transform hover:scale-105">
-                        <span className="font-bold">Learn How It Works</span>
+                        <span className="font-bold">
+                            <a href="" target="_blank">
+                                Learn How It Works
+                            </a>
+                        </span>
                     </button>
                 </div>
             </div>

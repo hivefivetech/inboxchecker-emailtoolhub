@@ -3,14 +3,18 @@ export default function Footer() {
         <footer className="bg-gradient-to-r from-gray-900 to-gray-700 text-gray-200 py-10">
             <div className="max-w-6xl mx-auto px-6 space-y-6 text-center">
                 <div className="space-y-3">
-                    <h3 className="text-xl font-bold text-white">JetStream Mailer</h3>
-                    <p className="text-sm">
-                        Your trusted tool for improving email deliverability and ensuring your campaigns land where they matter.
+                    <h3 className="text-xl font-bold text-white">EmailToolHub Inbox Checker</h3>
+                    <h5 className="text-md sm:text-lg text-white">
+                        Love Our Free Email Tester? Discover Why 99% of EmailToolHub Users Achieve Unmatched Email Deliverability
+                    </h5>
+                    <p className="text-sm text-white">
+                        Struggling with low deliverability rates for your cold emails or email marketing campaigns? 99% of EmailToolHub Inbox Checker users report the highest email deliverability rates they've ever experienced. Boost your email performance today!
                     </p>
                 </div>
                 <div className="flex justify-center space-x-6">
                     <a
                         href="https://t.me/ZplusMan"
+                        target="_blank"
                         className="text-gray-400 hover:text-blue-500 transition"
                         aria-label="Telegram"
                     >

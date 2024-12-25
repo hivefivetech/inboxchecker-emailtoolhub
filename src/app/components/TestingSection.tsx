@@ -367,6 +367,55 @@ export default function TestingSection() {
                     </div>
                 </div>
 
+                {/* Show Filter */}
+                <div className="flex justify-center space-x-4 mb-6">
+                    <button
+                        onClick={() => {
+                            setSelectedTabUser1("Inbox");
+                            setSelectedTabUser2("Inbox");
+                            setSelectedTabUser3("Inbox");
+                            setSelectedTabUser4("Inbox");
+                            setSelectedTabUser5("Inbox");
+                            setSelectedTabUser6("Inbox");
+                            setSelectedTabUser7("Inbox");
+                            setSelectedTabYahooUser1("Inbox");
+                            setSelectedTabYahooUser2("Inbox");
+                            setSelectedTabZohoUser1("Inbox");
+                            setSelectedTabZohoUser2("Inbox");
+                            setSelectedTabZohoUser3("Inbox");
+                            setSelectedTabYandexUser1("Inbox");
+                            setSelectedTabYandexUser2("Inbox");
+                        }}
+                        className="relative px-6 py-3 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full shadow-lg hover:from-green-500 hover:to-green-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-green-300 focus:outline-none"
+                    >
+                        <span className="absolute inset-0 rounded-full bg-green-100 opacity-10"></span>
+                        Show All Inbox
+                    </button>
+                    <button
+                        onClick={() => {
+                            setSelectedTabUser1("Spam");
+                            setSelectedTabUser2("Spam");
+                            setSelectedTabUser3("Spam");
+                            setSelectedTabUser4("Spam");
+                            setSelectedTabUser5("Spam");
+                            setSelectedTabUser6("Spam");
+                            setSelectedTabUser7("Spam");
+                            setSelectedTabYahooUser1("Spam");
+                            setSelectedTabYahooUser2("Spam");
+                            setSelectedTabZohoUser1("Spam");
+                            setSelectedTabZohoUser2("Spam");
+                            setSelectedTabZohoUser3("Spam");
+                            setSelectedTabYandexUser1("Spam");
+                            setSelectedTabYandexUser2("Spam");
+                        }}
+                        className="relative px-6 py-3 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-lg hover:from-red-500 hover:to-red-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-red-300 focus:outline-none"
+                    >
+                        <span className="absolute inset-0 rounded-full bg-red-100 opacity-10"></span>
+                        Show All Spam
+                    </button>
+                </div>
+
+
                 {/* GMAIL */}
                 {/* First Email Section */}
                 <EmailSection

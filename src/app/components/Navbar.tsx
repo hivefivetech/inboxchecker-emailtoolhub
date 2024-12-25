@@ -16,7 +16,11 @@ export default function Navbar() {
                 {/* Desktop Menu */}
                 <ul className="hidden md:flex space-x-6">
                     <li className="hover:text-blue-600 transition">How it Works</li>
-                    <li className="hover:text-blue-600 transition">Contact</li>
+                    <li className="hover:text-blue-600 transition">
+                        <a href="https://t.me/ZplusMan" target="_blank">
+                            Contact
+                        </a>
+                    </li>
                 </ul>
 
                 {/* Hamburger Icon for Small Screens */}
@@ -43,7 +47,11 @@ export default function Navbar() {
                     >
                         <ul className="flex flex-col space-y-4 py-4 px-6">
                             <li className="hover:text-blue-600 transition">How it Works</li>
-                            <li className="hover:text-blue-600 transition">Contact</li>
+                            <li className="hover:text-blue-600 transition">
+                                <a href="https://t.me/ZplusMan" target="_blank">
+                                    Contact
+                                </a>
+                            </li>
                         </ul>
                     </motion.div>
                 )}
