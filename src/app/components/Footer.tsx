@@ -8,7 +8,7 @@ export default function Footer() {
                         Love Our Free Email Tester? Discover Why 99% of EmailToolHub Users Achieve Unmatched Email Deliverability
                     </h5>
                     <p className="text-sm text-white">
-                        Struggling with low deliverability rates for your cold emails or email marketing campaigns? 99% of EmailToolHub Inbox Checker users report the highest email deliverability rates they've ever experienced. Boost your email performance today!
+                        Struggling with low deliverability rates for your cold emails or email marketing campaigns? 99% of EmailToolHub Inbox Checker users report the highest email deliverability rates they have ever experienced. Boost your email performance today!
                     </p>
                 </div>
                 <div className="flex justify-center space-x-6">
