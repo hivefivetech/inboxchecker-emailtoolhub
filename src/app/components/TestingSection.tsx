@@ -6,9 +6,9 @@ import Image from "next/image";
 import { FaSpinner } from "react-icons/fa";
 import { FaCheck } from "react-icons/fa6";
 import { TbLoader3 } from "react-icons/tb";
-// import GmailImage from "../assets/images/gmail.png";
-// import YahooImage from "../assets/images/yahoo.png";
-// import ZohoImage from "../assets/images/zoho.png";
+import GmailImage from "../assets/images/gmail.png";
+import YahooImage from "../assets/images/yahoo.png";
+import ZohoImage from "../assets/images/zoho.png";
 
 const fetchEmailsFromServer = async () => {
     try {
@@ -165,11 +165,7 @@ export default function TestingSection() {
     const [isLoading, setIsLoading] = useState(true);
     const [isRealtimeLoader, setIsRealtimeLoader] = useState(true);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
-
-    const gmailImage = 'https://i.ibb.co/qp50x6m/gmail.png';
-    const yahooImage = 'https://i.ibb.co/xX18gtR/yahoo.png';
-    const zohoImage = 'https://i.ibb.co/tmc88Wr/zoho.png';
-
+    
     const tabs = [
         { label: "Inbox", value: "Inbox" },
         { label: "Spam", value: "Spam" },
@@ -320,7 +316,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser1}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser1}
-                    image={gmailImage}
+                    image={GmailImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
@@ -333,7 +329,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser2}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser2}
-                    image={gmailImage}
+                    image={GmailImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
@@ -346,7 +342,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser3}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser3}
-                    image={gmailImage}
+                    image={GmailImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
@@ -359,7 +355,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser4}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser4}
-                    image={gmailImage}
+                    image={GmailImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
@@ -372,7 +368,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser5}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser5}
-                    image={gmailImage}
+                    image={GmailImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
@@ -385,7 +381,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabUser6}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsUser6}
-                    image={gmailImage}
+                    image={GmailImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
@@ -399,7 +395,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabYahooUser1}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsYahooUser1}
-                    image={yahooImage}
+                    image={YahooImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
@@ -412,7 +408,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabYahooUser2}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsYahooUser2}
-                    image={yahooImage}
+                    image={YahooImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
@@ -426,7 +422,7 @@ export default function TestingSection() {
                     setSelectedTab={setSelectedTabZohoUser1}
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsZohoUser1}
-                    image={zohoImage}
+                    image={ZohoImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
