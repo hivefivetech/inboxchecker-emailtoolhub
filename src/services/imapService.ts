@@ -28,7 +28,9 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
             ? "imap.mail.yahoo.com"
             : user.includes("@zohomail.in") || user.includes("@zoho.com")
                 ? "imap.zoho.in"
-                : "imap.gmail.com",
+                : user.includes("@yandex.com") || user.includes("@yandex.ru")
+                    ? "imap.yandex.com"
+                    : "imap.gmail.com",
         port: 993,
         secure: true,
         auth: {
@@ -169,6 +171,20 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         zohoFolders
     );
 
+    // Yandex
+    const yandexFolders = ["Inbox", "Spam"];
+    const yandexuser1Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_YANDEX_FIRST!,
+        process.env.IMAP_PASSWORD_YANDEX_FIRST!,
+        yandexFolders
+    );
+
+    const yandexuser2Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_YANDEX_SECOND!,
+        process.env.IMAP_PASSWORD_YANDEX_SECOND!,
+        yandexFolders
+    );
+
     return {
         gmailuser1: gmailuser1Emails,
         gmailuser2: gmailuser2Emails,
@@ -182,5 +198,7 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         zohouser1: zohouser1Emails,
         zohouser2: zohouser2Emails,
         zohouser3: zohouser3Emails,
+        yandexuser1: yandexuser1Emails,
+        yandexuser2: yandexuser2Emails,
     };
 }
