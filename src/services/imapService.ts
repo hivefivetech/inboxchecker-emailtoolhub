@@ -24,7 +24,11 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
     }
 
     const imapConfig = {
-        host: user.includes("@yahoo.com") ? "imap.mail.yahoo.com" : "imap.gmail.com",
+        host: user.includes("@yahoo.com")
+            ? "imap.mail.yahoo.com"
+            : user.includes("@zohomail.in") || user.includes("@zoho.com")
+                ? "imap.zoho.in"
+                : "imap.gmail.com",
         port: 993,
         secure: true,
         auth: {
@@ -62,9 +66,9 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
                             address: message.envelope.from[0]?.address || "Unknown Address",
                         },
                         date: emailDate,
-                        status: 
-                            folder.toLowerCase().includes("spam") || folder.toLowerCase().includes("bulk") 
-                                ? "Spam" 
+                        status:
+                            folder.toLowerCase().includes("spam") || folder.toLowerCase().includes("bulk")
+                                ? "Spam"
                                 : "Inbox",
                     });
                 }
@@ -88,6 +92,7 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
  * @returns Object containing emails for all accounts.
  */
 export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "[Gmail]/Spam"]) {
+    // Gmail
     const gmailuser1Emails = await fetchEmailsForAccount(
         process.env.IMAP_USER_GMAIL_FIRST!,
         process.env.IMAP_PASSWORD_GMAIL_FIRST!,
@@ -124,6 +129,7 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         folders
     );
 
+    // Yahoo
     const yahooFolders = ["Inbox", "Bulk"];
     const yahoouser1Emails = await fetchEmailsForAccount(
         process.env.IMAP_USER_YAHOO_FIRST!,
@@ -137,6 +143,14 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         yahooFolders
     );
 
+    // Zoho
+    const zohoFolders = ["Inbox", "Spam"];
+    const zohouser1Emails = await fetchEmailsForAccount(
+        process.env.IMAP_USER_ZOHO_FIRST!,
+        process.env.IMAP_PASSWORD_ZOHO_FIRST!,
+        zohoFolders
+    );
+
     return {
         gmailuser1: gmailuser1Emails,
         gmailuser2: gmailuser2Emails,
@@ -146,5 +160,6 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
         gmailuser6: gmailuser6Emails,
         yahoouser1: yahoouser1Emails,
         yahoouser2: yahoouser2Emails,
+        zohouser1: zohouser1Emails,
     };
 }

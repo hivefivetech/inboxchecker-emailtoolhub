@@ -8,6 +8,7 @@ import { FaCheck } from "react-icons/fa6";
 import { TbLoader3 } from "react-icons/tb";
 // import GmailImage from "../assets/images/gmail.png";
 // import YahooImage from "../assets/images/yahoo.png";
+// import ZohoImage from "../assets/images/zoho.png";
 
 const fetchEmailsFromServer = async () => {
     try {
@@ -101,16 +102,27 @@ const fetchEmailsFromServer = async () => {
                     status: email.status || "Inbox",
                     date: new Date(email.date),
                 })),
+                zohouser1: data.emails.zohouser1.map((email: any) => ({
+                    name: email.from?.name || "Unknown Sender",
+                    email: email.from?.address || "Unknown Email",
+                    maskedEmail: email.from?.address
+                        ? email.from.address.replace(/@(.*)\./, "@*****.")
+                        : "Unknown Email",
+                    subject: email.subject || "No Subject",
+                    status: email.status || "Inbox",
+                    date: new Date(email.date),
+                })),
             };
         }
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], yahoouser1: [], yahoouser2: [] };
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], yahoouser1: [], yahoouser2: [], zohouser1: [] };
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], yahoouser1: [], yahoouser2: [] };
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], yahoouser1: [], yahoouser2: [], zohouser1: [] };
     }
 };
 
 export default function TestingSection() {
+    // Gmail
     const [resultsUser1, setResultsUser1] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
@@ -129,10 +141,15 @@ export default function TestingSection() {
     const [resultsUser6, setResultsUser6] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
+    // Yahoo
     const [resultsYahooUser1, setResultsYahooUser1] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
     const [resultsYahooUser2, setResultsYahooUser2] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
+    // Zoho
+    const [resultsZohoUser1, setResultsZohoUser1] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
     const [selectedTabUser1, setSelectedTabUser1] = useState("Inbox");
@@ -143,6 +160,7 @@ export default function TestingSection() {
     const [selectedTabUser6, setSelectedTabUser6] = useState("Inbox");
     const [selectedTabYahooUser1, setSelectedTabYahooUser1] = useState("Inbox");
     const [selectedTabYahooUser2, setSelectedTabYahooUser2] = useState("Inbox");
+    const [selectedTabZohoUser1, setSelectedTabZohoUser1] = useState("Inbox");
     const [searchQuery, setSearchQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isRealtimeLoader, setIsRealtimeLoader] = useState(true);
@@ -150,6 +168,7 @@ export default function TestingSection() {
 
     const gmailImage = 'https://i.ibb.co/qp50x6m/gmail.png';
     const yahooImage = 'https://i.ibb.co/xX18gtR/yahoo.png';
+    const zohoImage = 'https://i.ibb.co/tmc88Wr/zoho.png';
 
     const tabs = [
         { label: "Inbox", value: "Inbox" },
@@ -162,7 +181,7 @@ export default function TestingSection() {
                 setIsLoading(true);
             }
             setIsRealtimeLoader(true);
-            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, yahoouser1, yahoouser2 } = await fetchEmailsFromServer();
+            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, yahoouser1, yahoouser2, zohouser1 } = await fetchEmailsFromServer();
             setResultsUser1(gmailuser1);
             setResultsUser2(gmailuser2);
             setResultsUser3(gmailuser3);
@@ -171,6 +190,7 @@ export default function TestingSection() {
             setResultsUser6(gmailuser6);
             setResultsYahooUser1(yahoouser1);
             setResultsYahooUser2(yahoouser2);
+            setResultsZohoUser1(zohouser1);
             setIsLoading(false);
             setIsFirstLoad(false);
             setIsRealtimeLoader(false);
@@ -183,6 +203,7 @@ export default function TestingSection() {
     }, []);
 
     // Filter emails based on the selected tab and search query
+    // Gmail
     const filteredTabResultsUser1 = resultsUser1.filter((email) => {
         const matchesTab = email.status === selectedTabUser1;
         const matchesSearch =
@@ -231,6 +252,7 @@ export default function TestingSection() {
         return matchesTab && matchesSearch;
     });
 
+    // Yahoo
     const filteredTabResultsYahooUser1 = resultsYahooUser1.filter((email) => {
         const matchesTab = email.status === selectedTabYahooUser1;
         const matchesSearch =
@@ -241,6 +263,15 @@ export default function TestingSection() {
 
     const filteredTabResultsYahooUser2 = resultsYahooUser2.filter((email) => {
         const matchesTab = email.status === selectedTabYahooUser2;
+        const matchesSearch =
+            email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            email.email.toLowerCase().includes(searchQuery.toLowerCase());
+        return matchesTab && matchesSearch;
+    });
+
+    // Zoho
+    const filteredTabResultsZohoUser1 = resultsZohoUser1.filter((email) => {
+        const matchesTab = email.status === selectedTabZohoUser1;
         const matchesSearch =
             email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             email.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -280,6 +311,7 @@ export default function TestingSection() {
                     </div>
                 </div>
 
+                {/* GMAIL */}
                 {/* First Email Section */}
                 <EmailSection
                     accountEmail="wardenleon484@gmail.com"
@@ -358,6 +390,7 @@ export default function TestingSection() {
                     isRealtimeLoader={isRealtimeLoader}
                 />
 
+                {/* YAHOO */}
                 {/* Yahoo User 1 Email Section */}
                 <EmailSection
                     accountEmail="syedtestm@yahoo.com"
@@ -380,6 +413,20 @@ export default function TestingSection() {
                     tabs={tabs}
                     filteredTabResults={filteredTabResultsYahooUser2}
                     image={yahooImage}
+                    isLoading={isLoading && isFirstLoad}
+                    isRealtimeLoader={isRealtimeLoader}
+                />
+
+                {/* ZOHO */}
+                {/* Zoho User 1 Email Section */}
+                <EmailSection
+                    accountEmail="jamie_roberts@zohomail.in"
+                    ageOfEmail="6 Years Old"
+                    selectedTab={selectedTabZohoUser1}
+                    setSelectedTab={setSelectedTabZohoUser1}
+                    tabs={tabs}
+                    filteredTabResults={filteredTabResultsZohoUser1}
+                    image={zohoImage}
                     isLoading={isLoading && isFirstLoad}
                     isRealtimeLoader={isRealtimeLoader}
                 />
@@ -489,7 +536,7 @@ function EmailSection({
                         />
                     </motion.div>
                 ) : filteredTabResults.length > 0 ? (
-                    <div className="max-h-96 overflow-y-auto">
+                    <div className="max-h-64 overflow-y-auto">
                         <AnimatePresence>
                             {filteredTabResults.map((result, index) => (
                                 <motion.div
