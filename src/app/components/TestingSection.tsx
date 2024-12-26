@@ -257,6 +257,7 @@ export default function TestingSection() {
     const [isLoading, setIsLoading] = useState(true);
     const [isRealtimeLoader, setIsRealtimeLoader] = useState(true);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
+    const [selectedProvider, setSelectedProvider] = useState("all");
 
     const tabs = [
         { label: "Inbox", value: "Inbox" },
@@ -290,7 +291,7 @@ export default function TestingSection() {
         };
 
         fetchEmails();
-        const interval = setInterval(fetchEmails, 5000);
+        const interval = setInterval(fetchEmails, 10000);
 
         return () => clearInterval(interval);
     }, []);
@@ -419,200 +420,247 @@ export default function TestingSection() {
                     </button>
                 </div>
 
+                <div className="flex justify-center gap-4 mb-4 max-w-5xl mx-auto flex-wrap">
+                    <button
+                        onClick={() => setSelectedProvider("all")}
+                        className={`px-6 py-2 rounded-full shadow-lg ${selectedProvider === "all"
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200 text-gray-800 hover:bg-blue-400 hover:text-white"
+                            } transition duration-300`}
+                    >
+                        Show All
+                    </button>
+                    <button
+                        onClick={() => setSelectedProvider("gmail")}
+                        className={`px-6 py-2 rounded-full shadow-lg ${selectedProvider === "gmail"
+                            ? "bg-green-500 text-white"
+                            : "bg-gray-200 text-gray-800 hover:bg-green-400 hover:text-white"
+                            } transition duration-300`}
+                    >
+                        Gmail
+                    </button>
+                    <button
+                        onClick={() => setSelectedProvider("yahoo")}
+                        className={`px-6 py-2 rounded-full shadow-lg ${selectedProvider === "yahoo"
+                            ? "bg-purple-500 text-white"
+                            : "bg-gray-200 text-gray-800 hover:bg-purple-400 hover:text-white"
+                            } transition duration-300`}
+                    >
+                        Yahoo
+                    </button>
+                    <button
+                        onClick={() => setSelectedProvider("zoho")}
+                        className={`px-6 py-2 rounded-full shadow-lg ${selectedProvider === "zoho"
+                            ? "bg-yellow-500 text-white"
+                            : "bg-gray-200 text-gray-800 hover:bg-yellow-400 hover:text-white"
+                            } transition duration-300`}
+                    >
+                        Zoho
+                    </button>
+                    <button
+                        onClick={() => setSelectedProvider("yandex")}
+                        className={`px-6 py-2 rounded-full shadow-lg ${selectedProvider === "yandex"
+                            ? "bg-red-500 text-white"
+                            : "bg-gray-200 text-gray-800 hover:bg-red-400 hover:text-white"
+                            } transition duration-300`}
+                    >
+                        Yandex
+                    </button>
+                </div>
+
                 <div className="flex flex-col justify-center items-start md:grid grid-cols-2 w-full gap-5">
                     {/* GMAIL */}
-                    {/* First Email Section */}
-                    <EmailSection
-                        accountEmail="wardenleon484@gmail.com"
-                        ageOfEmail="9 Years Old Email"
-                        selectedTab={selectedTabUser1}
-                        setSelectedTab={setSelectedTabUser1}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.gmail[0]}
-                        image={GmailImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
+                    {selectedProvider === "all" || selectedProvider === "gmail" ? (
+                        <>
+                            <EmailSection
+                                accountEmail="wardenleon484@gmail.com"
+                                ageOfEmail="9 Years Old Email"
+                                selectedTab={selectedTabUser1}
+                                setSelectedTab={setSelectedTabUser1}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.gmail[0]}
+                                image={GmailImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="thomasadward5@gmail.com"
+                                ageOfEmail="6 Years Old Email"
+                                selectedTab={selectedTabUser2}
+                                setSelectedTab={setSelectedTabUser2}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.gmail[1]}
+                                image={GmailImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="stellajamsonusa@gmail.com"
+                                ageOfEmail="7 Years Old Email"
+                                selectedTab={selectedTabUser3}
+                                setSelectedTab={setSelectedTabUser3}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.gmail[2]}
+                                image={GmailImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="foodazmaofficial@gmail.com"
+                                ageOfEmail="5 Years Old Email"
+                                selectedTab={selectedTabUser4}
+                                setSelectedTab={setSelectedTabUser4}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.gmail[3]}
+                                image={GmailImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="watsonjetpeter@gmail.com"
+                                ageOfEmail="7 Years Old Email"
+                                selectedTab={selectedTabUser5}
+                                setSelectedTab={setSelectedTabUser5}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.gmail[4]}
+                                image={GmailImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="dcruzjovita651@gmail.com"
+                                ageOfEmail="3 Years Old Email"
+                                selectedTab={selectedTabUser6}
+                                setSelectedTab={setSelectedTabUser6}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.gmail[5]}
+                                image={GmailImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="doctsashawn@gmail.com"
+                                ageOfEmail="5 Years Old Email"
+                                selectedTab={selectedTabUser7}
+                                setSelectedTab={setSelectedTabUser7}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.gmail[6]}
+                                image={GmailImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                        </>
+                    ) : null}
 
-                    {/* Second Email Section */}
-                    <EmailSection
-                        accountEmail="thomasadward5@gmail.com"
-                        ageOfEmail="6 Years Old Email"
-                        selectedTab={selectedTabUser2}
-                        setSelectedTab={setSelectedTabUser2}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.gmail[1]}
-                        image={GmailImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
-
-                    {/* Third Email Section */}
-                    <EmailSection
-                        accountEmail="stellajamsonusa@gmail.com"
-                        ageOfEmail="7 Years Old Email"
-                        selectedTab={selectedTabUser3}
-                        setSelectedTab={setSelectedTabUser3}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.gmail[2]}
-                        image={GmailImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
-
-                    {/* Fourth Email Section */}
-                    <EmailSection
-                        accountEmail="foodazmaofficial@gmail.com"
-                        ageOfEmail="5 Years Old Email"
-                        selectedTab={selectedTabUser4}
-                        setSelectedTab={setSelectedTabUser4}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.gmail[3]}
-                        image={GmailImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
-
-                    {/* Fifth Email Section */}
-                    <EmailSection
-                        accountEmail="watsonjetpeter@gmail.com"
-                        ageOfEmail="7 Years Old Email"
-                        selectedTab={selectedTabUser5}
-                        setSelectedTab={setSelectedTabUser5}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.gmail[4]}
-                        image={GmailImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
-
-                    {/* Sixth Email Section */}
-                    <EmailSection
-                        accountEmail="dcruzjovita651@gmail.com"
-                        ageOfEmail="3 Years Old Email"
-                        selectedTab={selectedTabUser6}
-                        setSelectedTab={setSelectedTabUser6}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.gmail[5]}
-                        image={GmailImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
-
-                    {/* Seventh Email Section */}
-                    <EmailSection
-                        accountEmail="doctsashawn@gmail.com"
-                        ageOfEmail="5 Years Old Email"
-                        selectedTab={selectedTabUser7}
-                        setSelectedTab={setSelectedTabUser7}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.gmail[6]}
-                        image={GmailImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
                     {/* YAHOO */}
-                    {/* Yahoo User 1 Email Section */}
-                    <EmailSection
-                        accountEmail="syedtestm@yahoo.com"
-                        ageOfEmail="4 Years Old"
-                        selectedTab={selectedTabYahooUser1}
-                        setSelectedTab={setSelectedTabYahooUser1}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.yahoo[0]}
-                        image={YahooImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
+                    {selectedProvider === "all" || selectedProvider === "yahoo" ? (
+                        <>
+                            <EmailSection
+                                accountEmail="syedtestm@yahoo.com"
+                                ageOfEmail="4 Years Old"
+                                selectedTab={selectedTabYahooUser1}
+                                setSelectedTab={setSelectedTabYahooUser1}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.yahoo[0]}
+                                image={YahooImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="vexabyteofficial@yahoo.com"
+                                ageOfEmail="8 Years Old"
+                                selectedTab={selectedTabYahooUser2}
+                                setSelectedTab={setSelectedTabYahooUser2}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.yahoo[1]}
+                                image={YahooImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                        </>
+                    ) : null}
 
-                    {/* Yahoo User 2 Email Section */}
-                    <EmailSection
-                        accountEmail="vexabyteofficial@yahoo.com"
-                        ageOfEmail="8 Years Old"
-                        selectedTab={selectedTabYahooUser2}
-                        setSelectedTab={setSelectedTabYahooUser2}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.yahoo[1]}
-                        image={YahooImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
 
                     {/* ZOHO */}
-                    <EmailSection
-                        accountEmail="jamie_roberts@zohomail.in"
-                        ageOfEmail="6 Years Old"
-                        selectedTab={selectedTabZohoUser1}
-                        setSelectedTab={setSelectedTabZohoUser1}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.zoho[0]}
-                        image={ZohoImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
-
-                    <EmailSection
-                        accountEmail="rollyriders@zohomail.in"
-                        ageOfEmail="4 Years Old"
-                        selectedTab={selectedTabZohoUser2}
-                        setSelectedTab={setSelectedTabZohoUser2}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.zoho[1]}
-                        image={ZohoImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
-
-                    <EmailSection
-                        accountEmail="pollywilmar@zohomail.in"
-                        ageOfEmail="7 Years Old"
-                        selectedTab={selectedTabZohoUser3}
-                        setSelectedTab={setSelectedTabZohoUser3}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.zoho[2]}
-                        image={ZohoImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
+                    {selectedProvider === "all" || selectedProvider === "zoho" ? (
+                        <>
+                            <EmailSection
+                                accountEmail="jamie_roberts@zohomail.in"
+                                ageOfEmail="6 Years Old"
+                                selectedTab={selectedTabZohoUser1}
+                                setSelectedTab={setSelectedTabZohoUser1}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.zoho[0]}
+                                image={ZohoImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="rollyriders@zohomail.in"
+                                ageOfEmail="4 Years Old"
+                                selectedTab={selectedTabZohoUser2}
+                                setSelectedTab={setSelectedTabZohoUser2}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.zoho[1]}
+                                image={ZohoImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="pollywilmar@zohomail.in"
+                                ageOfEmail="7 Years Old"
+                                selectedTab={selectedTabZohoUser3}
+                                setSelectedTab={setSelectedTabZohoUser3}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.zoho[2]}
+                                image={ZohoImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                        </>
+                    ) : null}
 
                     {/* YANDEX */}
-                    <EmailSection
-                        accountEmail="awesome.jamii@yandex.com"
-                        ageOfEmail="5 Years Old"
-                        selectedTab={selectedTabYandexUser1}
-                        setSelectedTab={setSelectedTabYandexUser1}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.yandex[0]}
-                        image={YandexImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
-
-                    <EmailSection
-                        accountEmail="boudreauryan@yandex.com"
-                        ageOfEmail="2 Years Old"
-                        selectedTab={selectedTabYandexUser2}
-                        setSelectedTab={setSelectedTabYandexUser2}
-                        tabs={tabs}
-                        filteredTabResults={filteredEmails.yandex[1]}
-                        image={YandexImage}
-                        isLoading={isLoading && isFirstLoad}
-                        isRealtimeLoader={isRealtimeLoader}
-                        setSearchQuery={setSearchQuery}
-                    />
+                    {selectedProvider === "all" || selectedProvider === "yandex" ? (
+                        <>
+                            <EmailSection
+                                accountEmail="awesome.jamii@yandex.com"
+                                ageOfEmail="5 Years Old"
+                                selectedTab={selectedTabYandexUser1}
+                                setSelectedTab={setSelectedTabYandexUser1}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.yandex[0]}
+                                image={YandexImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                            <EmailSection
+                                accountEmail="boudreauryan@yandex.com"
+                                ageOfEmail="2 Years Old"
+                                selectedTab={selectedTabYandexUser2}
+                                setSelectedTab={setSelectedTabYandexUser2}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.yandex[1]}
+                                image={YandexImage}
+                                isLoading={isLoading && isFirstLoad}
+                                isRealtimeLoader={isRealtimeLoader}
+                                setSearchQuery={setSearchQuery}
+                            />
+                        </>
+                    ) : null}
                 </div>
             </div>
         </section>
@@ -739,6 +787,7 @@ function EmailSection({
                                             <Image
                                                 src={image}
                                                 alt={`${accountEmail.includes("@yahoo.com") ? "Yahoo" : "Gmail"} logo`}
+                                                fill={true}
                                                 layout="fill"
                                                 objectFit="contain"
                                                 className="rounded-md"
