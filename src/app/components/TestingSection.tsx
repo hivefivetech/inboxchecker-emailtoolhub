@@ -20,6 +20,65 @@ interface EmailResult {
     date: Date;
 }
 
+interface Email {
+    id: string;
+    name: string;
+    email: string;
+    maskedEmail: string;
+    subject: string;
+    status: string;
+    date: Date;
+    snippet: string;
+}
+interface GmailResults {
+    [key: string]: {
+        [tab: string]: Email[];
+    };
+}
+
+const fetchGmailEmailsFromServer = async (): Promise<GmailResults> => {
+    try {
+        const response = await fetch("/api/gmails");
+        if (!response.ok) {
+            throw new Error(`Error: ${response.statusText}`);
+        }
+        const data = await response.json();
+
+        if (data.success && data.gmailResults) {
+            return Object.entries(data.gmailResults).reduce<GmailResults>(
+                (acc, [emailAccount, tabs]) => {
+                    acc[emailAccount] = {};
+                    Object.entries(tabs as Record<string, unknown[]>).forEach(
+                        ([tab, emails]) => {
+                            acc[emailAccount][tab] = (emails as any[]).map((email) => ({
+                                id: email.id,
+                                name: email.from?.name || "Unknown Sender",
+                                email: email.from?.address || "Unknown Email",
+                                maskedEmail: email.from?.address
+                                    ? email.from.address.replace(/@(.*)\./, "@*****.")
+                                    : "Unknown Email",
+                                subject: email.subject || "No Subject",
+                                status: tab,
+                                date: new Date(email.date),
+                                snippet: email.snippet || "No Snippet",
+                            }));
+                        }
+                    );
+                    return acc;
+                },
+                {}
+            );
+        } else {
+            console.warn("No Gmail data found.");
+            return {};
+        }
+    } catch (error) {
+        console.error("Error fetching Gmail emails:", error);
+        return {};
+    }
+};
+
+// IMAP
 const fetchEmailsFromServer = async () => {
     try {
         // console.log('Here')
@@ -32,78 +91,6 @@ const fetchEmailsFromServer = async () => {
         // console.log('data: ', data)
         if (data.success) {
             return {
-                // GMAIL
-                gmailuser1: data.emails.gmailuser1.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status,
-                    date: new Date(email.date),
-                })),
-                gmailuser2: data.emails.gmailuser2.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status,
-                    date: new Date(email.date),
-                })),
-                gmailuser3: data.emails.gmailuser3.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status,
-                    date: new Date(email.date),
-                })),
-                gmailuser4: data.emails.gmailuser4.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status,
-                    date: new Date(email.date),
-                })),
-                gmailuser5: data.emails.gmailuser5.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status,
-                    date: new Date(email.date),
-                })),
-                gmailuser6: data.emails.gmailuser6.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status,
-                    date: new Date(email.date),
-                })),
-                gmailuser7: data.emails.gmailuser7.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status,
-                    date: new Date(email.date),
-                })),
-
                 // YAHOO
                 yahoouser1: data.emails.yahoouser1.map((email: any) => ({
                     name: email.from?.name || "Unknown Sender",
@@ -181,37 +168,35 @@ const fetchEmailsFromServer = async () => {
                 })),
             };
         }
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
+        return { yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
+        return { yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
     }
 };
 
 export default function TestingSection() {
-    // Gmail
-    const [resultsUser1, setResultsUser1] = useState<
+    const [isLoadingGmail, setIsLoadingGmail] = useState(false);
+    const [isRealtimeLoadingGmail, setIsRealtimeLoadingGmail] = useState(false);
+    const [isFirstReloadGmail, setIsFirstReloadGmail] = useState(false);
+    const [resultsGmailUser1, setResultsGmailUser1] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
-    const [resultsUser2, setResultsUser2] = useState<
+    const [resultsGmailUser2, setResultsGmailUser2] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
-    const [resultsUser3, setResultsUser3] = useState<
+    const [resultsGmailUser3, setResultsGmailUser3] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
-    const [resultsUser4, setResultsUser4] = useState<
+    const [resultsGmailUser4, setResultsGmailUser4] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
-    const [resultsUser5, setResultsUser5] = useState<
+    const [resultsGmailUser5, setResultsGmailUser5] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
-    const [resultsUser6, setResultsUser6] = useState<
+    const [resultsGmailUser6, setResultsGmailUser6] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
-    const [resultsUser7, setResultsUser7] = useState<
-        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
-    >([]);
-
     // Yahoo
     const [resultsYahooUser1, setResultsYahooUser1] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
@@ -239,13 +224,6 @@ export default function TestingSection() {
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
 
-    const [selectedTabUser1, setSelectedTabUser1] = useState("Inbox");
-    const [selectedTabUser2, setSelectedTabUser2] = useState("Inbox");
-    const [selectedTabUser3, setSelectedTabUser3] = useState("Inbox");
-    const [selectedTabUser4, setSelectedTabUser4] = useState("Inbox");
-    const [selectedTabUser5, setSelectedTabUser5] = useState("Inbox");
-    const [selectedTabUser6, setSelectedTabUser6] = useState("Inbox");
-    const [selectedTabUser7, setSelectedTabUser7] = useState("Inbox");
     const [selectedTabYahooUser1, setSelectedTabYahooUser1] = useState("Inbox");
     const [selectedTabYahooUser2, setSelectedTabYahooUser2] = useState("Inbox");
     const [selectedTabZohoUser1, setSelectedTabZohoUser1] = useState("Inbox");
@@ -259,25 +237,83 @@ export default function TestingSection() {
     const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [selectedProvider, setSelectedProvider] = useState("all");
 
+    const [selectedTabGmailUser1, setSelectedTabGmailUser1] = useState("Primary");
+    const [selectedTabGmailUser2, setSelectedTabGmailUser2] = useState("Primary");
+    const [selectedTabGmailUser3, setSelectedTabGmailUser3] = useState("Primary");
+    const [selectedTabGmailUser4, setSelectedTabGmailUser4] = useState("Primary");
+    const [selectedTabGmailUser5, setSelectedTabGmailUser5] = useState("Primary");
+    const [selectedTabGmailUser6, setSelectedTabGmailUser6] = useState("Primary");
+
+    const gmailTabs = [
+        { label: "Primary", value: "Primary" },
+        { label: "Spam", value: "Spam" },
+        { label: "Promotions", value: "Promotions" },
+        { label: "Social", value: "Social" },
+        { label: "Updates", value: "Updates" },
+    ];
     const tabs = [
         { label: "Inbox", value: "Inbox" },
         { label: "Spam", value: "Spam" },
     ];
 
+    // GMAIL
+    useEffect(() => {
+        const fetchGmailEmails = async () => {
+            if (isFirstReloadGmail) {
+                setIsLoadingGmail(true);
+            }
+            setIsRealtimeLoadingGmail(true);
+            const emails = await fetchGmailEmailsFromServer();
+
+            if (emails["dcruzjovita651-token.json"]) {
+                const tabs = emails["dcruzjovita651-token.json"];
+                const allEmails = Object.values(tabs).flat();
+                setResultsGmailUser1(allEmails);
+            }
+            if (emails["doctsashawn-token.json"]) {
+                const tabs = emails["doctsashawn-token.json"];
+                const allEmails = Object.values(tabs).flat();
+                setResultsGmailUser2(allEmails);
+            }
+            if (emails["foodazmaofficial-token.json"]) {
+                const tabs = emails["foodazmaofficial-token.json"];
+                const allEmails = Object.values(tabs).flat();
+                setResultsGmailUser3(allEmails);
+            }
+            if (emails["stellajamsonusa-token.json"]) {
+                const tabs = emails["stellajamsonusa-token.json"];
+                const allEmails = Object.values(tabs).flat();
+                setResultsGmailUser4(allEmails);
+            }
+            if (emails["thomasadward5-token.json"]) {
+                const tabs = emails["thomasadward5-token.json"];
+                const allEmails = Object.values(tabs).flat();
+                setResultsGmailUser5(allEmails);
+            }
+            if (emails["watsonjetpeter-token.json"]) {
+                const tabs = emails["watsonjetpeter-token.json"];
+                const allEmails = Object.values(tabs).flat();
+                setResultsGmailUser6(allEmails);
+            }
+            setIsFirstReloadGmail(false);
+            setIsLoadingGmail(false);
+            setIsRealtimeLoadingGmail(false);
+        };
+
+        fetchGmailEmails();
+        const interval = setInterval(fetchGmailEmails, 10000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // IMAP
     useEffect(() => {
         const fetchEmails = async () => {
             if (isFirstLoad) {
                 setIsLoading(true);
             }
             setIsRealtimeLoader(true);
-            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, gmailuser7, yahoouser1, yahoouser2, zohouser1, zohouser2, zohouser3, yandexuser1, yandexuser2 } = await fetchEmailsFromServer();
-            setResultsUser1(gmailuser1);
-            setResultsUser2(gmailuser2);
-            setResultsUser3(gmailuser3);
-            setResultsUser4(gmailuser4);
-            setResultsUser5(gmailuser5);
-            setResultsUser6(gmailuser6);
-            setResultsUser7(gmailuser7);
+            const { yahoouser1, yahoouser2, zohouser1, zohouser2, zohouser3, yandexuser1, yandexuser2 } = await fetchEmailsFromServer();
             setResultsYahooUser1(yahoouser1);
             setResultsYahooUser2(yahoouser2);
             setResultsZohoUser1(zohouser1);
@@ -298,15 +334,6 @@ export default function TestingSection() {
 
     // Filter emails based on the selected tab and search query
     const emailResults = {
-        gmail: [
-            { results: resultsUser1, selectedTab: selectedTabUser1 },
-            { results: resultsUser2, selectedTab: selectedTabUser2 },
-            { results: resultsUser3, selectedTab: selectedTabUser3 },
-            { results: resultsUser4, selectedTab: selectedTabUser4 },
-            { results: resultsUser5, selectedTab: selectedTabUser5 },
-            { results: resultsUser6, selectedTab: selectedTabUser6 },
-            { results: resultsUser7, selectedTab: selectedTabUser7 },
-        ],
         yahoo: [
             { results: resultsYahooUser1, selectedTab: selectedTabYahooUser1 },
             { results: resultsYahooUser2, selectedTab: selectedTabYahooUser2 },
@@ -320,11 +347,19 @@ export default function TestingSection() {
             { results: resultsYandexUser1, selectedTab: selectedTabYandexUser1 },
             { results: resultsYandexUser2, selectedTab: selectedTabYandexUser2 },
         ],
+        gmail: [
+            { results: resultsGmailUser1, selectedTab: selectedTabGmailUser1 },
+            { results: resultsGmailUser2, selectedTab: selectedTabGmailUser2 },
+            { results: resultsGmailUser3, selectedTab: selectedTabGmailUser3 },
+            { results: resultsGmailUser4, selectedTab: selectedTabGmailUser4 },
+            { results: resultsGmailUser5, selectedTab: selectedTabGmailUser5 },
+            { results: resultsGmailUser6, selectedTab: selectedTabGmailUser6 },
+        ],
     };
     const filterEmails = (emailData: any) => {
         return emailData.map(({ results, selectedTab }: { results: EmailResult[]; selectedTab: string }) =>
             results.filter((email: any) => {
-                const matchesTab = email.status === selectedTab;
+                const matchesTab = email.status.toLowerCase() === selectedTab.toLowerCase(); // Match tab
                 const matchesSearch =
                     email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     email.email.toLowerCase().includes(searchQuery.toLowerCase());
@@ -332,11 +367,12 @@ export default function TestingSection() {
             })
         );
     };
+
     const filteredEmails = {
-        gmail: filterEmails(emailResults.gmail),
         yahoo: filterEmails(emailResults.yahoo),
         zoho: filterEmails(emailResults.zoho),
         yandex: filterEmails(emailResults.yandex),
+        gmail: filterEmails(emailResults.gmail),
     };
 
     return (
@@ -376,13 +412,6 @@ export default function TestingSection() {
                 <div className="flex justify-center space-x-4 mb-4 max-w-5xl mx-auto">
                     <button
                         onClick={() => {
-                            setSelectedTabUser1("Inbox");
-                            setSelectedTabUser2("Inbox");
-                            setSelectedTabUser3("Inbox");
-                            setSelectedTabUser4("Inbox");
-                            setSelectedTabUser5("Inbox");
-                            setSelectedTabUser6("Inbox");
-                            setSelectedTabUser7("Inbox");
                             setSelectedTabYahooUser1("Inbox");
                             setSelectedTabYahooUser2("Inbox");
                             setSelectedTabZohoUser1("Inbox");
@@ -390,6 +419,13 @@ export default function TestingSection() {
                             setSelectedTabZohoUser3("Inbox");
                             setSelectedTabYandexUser1("Inbox");
                             setSelectedTabYandexUser2("Inbox");
+                            // Gmail (Primary for Inbox)
+                            setSelectedTabGmailUser1("Primary");
+                            setSelectedTabGmailUser2("Primary");
+                            setSelectedTabGmailUser3("Primary");
+                            setSelectedTabGmailUser4("Primary");
+                            setSelectedTabGmailUser5("Primary");
+                            setSelectedTabGmailUser6("Primary");
                         }}
                         className="relative px-6 py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full shadow-lg hover:from-green-500 hover:to-green-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-green-300 focus:outline-none"
                     >
@@ -398,13 +434,6 @@ export default function TestingSection() {
                     </button>
                     <button
                         onClick={() => {
-                            setSelectedTabUser1("Spam");
-                            setSelectedTabUser2("Spam");
-                            setSelectedTabUser3("Spam");
-                            setSelectedTabUser4("Spam");
-                            setSelectedTabUser5("Spam");
-                            setSelectedTabUser6("Spam");
-                            setSelectedTabUser7("Spam");
                             setSelectedTabYahooUser1("Spam");
                             setSelectedTabYahooUser2("Spam");
                             setSelectedTabZohoUser1("Spam");
@@ -412,6 +441,13 @@ export default function TestingSection() {
                             setSelectedTabZohoUser3("Spam");
                             setSelectedTabYandexUser1("Spam");
                             setSelectedTabYandexUser2("Spam");
+                            // Gmail
+                            setSelectedTabGmailUser1("Spam");
+                            setSelectedTabGmailUser2("Spam");
+                            setSelectedTabGmailUser3("Spam");
+                            setSelectedTabGmailUser4("Spam");
+                            setSelectedTabGmailUser5("Spam");
+                            setSelectedTabGmailUser6("Spam");
                         }}
                         className="relative px-6 py-2 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-lg hover:from-red-500 hover:to-red-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-red-300 focus:outline-none"
                     >
@@ -469,92 +505,86 @@ export default function TestingSection() {
                 </div>
 
                 <div className="flex flex-col justify-center items-start md:grid grid-cols-2 w-full gap-5">
-                    {/* GMAIL */}
+                    {/* Gmail */}
                     {selectedProvider === "all" || selectedProvider === "gmail" ? (
                         <>
-                            <EmailSection
-                                accountEmail="wardenleon484@gmail.com"
-                                ageOfEmail="9 Years Old Email"
-                                selectedTab={selectedTabUser1}
-                                setSelectedTab={setSelectedTabUser1}
-                                tabs={tabs}
+                            <GmailSection
+                                accountEmail="dcruzjovita651@gmail.com"
+                                ageOfEmail="3 Years Old"
+                                selectedTab={selectedTabGmailUser1}
+                                setSelectedTab={setSelectedTabGmailUser1}
+                                tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[0]}
                                 image={GmailImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingGmail && isFirstReloadGmail}
+                                isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
+                                isFirstLoad={isFirstLoad}
                             />
-                            <EmailSection
-                                accountEmail="thomasadward5@gmail.com"
-                                ageOfEmail="6 Years Old Email"
-                                selectedTab={selectedTabUser2}
-                                setSelectedTab={setSelectedTabUser2}
-                                tabs={tabs}
+                            <GmailSection
+                                accountEmail="doctsashawn@gmail.com"
+                                ageOfEmail="5 Years Old"
+                                selectedTab={selectedTabGmailUser2}
+                                setSelectedTab={setSelectedTabGmailUser2}
+                                tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[1]}
                                 image={GmailImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingGmail && isFirstReloadGmail}
+                                isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
+                                isFirstLoad={isFirstLoad}
                             />
-                            <EmailSection
-                                accountEmail="stellajamsonusa@gmail.com"
-                                ageOfEmail="7 Years Old Email"
-                                selectedTab={selectedTabUser3}
-                                setSelectedTab={setSelectedTabUser3}
-                                tabs={tabs}
+                            <GmailSection
+                                accountEmail="foodazmaofficial@gmail.com"
+                                ageOfEmail="8 Years Old"
+                                selectedTab={selectedTabGmailUser3}
+                                setSelectedTab={setSelectedTabGmailUser3}
+                                tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[2]}
                                 image={GmailImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingGmail && isFirstReloadGmail}
+                                isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
+                                isFirstLoad={isFirstLoad}
                             />
-                            <EmailSection
-                                accountEmail="foodazmaofficial@gmail.com"
-                                ageOfEmail="5 Years Old Email"
-                                selectedTab={selectedTabUser4}
-                                setSelectedTab={setSelectedTabUser4}
-                                tabs={tabs}
+                            <GmailSection
+                                accountEmail="stellajamsonusa@gmail.com"
+                                ageOfEmail="6 Years Old"
+                                selectedTab={selectedTabGmailUser4}
+                                setSelectedTab={setSelectedTabGmailUser4}
+                                tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[3]}
                                 image={GmailImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingGmail && isFirstReloadGmail}
+                                isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
+                                isFirstLoad={isFirstLoad}
                             />
-                            <EmailSection
-                                accountEmail="watsonjetpeter@gmail.com"
-                                ageOfEmail="7 Years Old Email"
-                                selectedTab={selectedTabUser5}
-                                setSelectedTab={setSelectedTabUser5}
-                                tabs={tabs}
+                            <GmailSection
+                                accountEmail="thomasadward5@gmail.com"
+                                ageOfEmail="2 Years Old"
+                                selectedTab={selectedTabGmailUser5}
+                                setSelectedTab={setSelectedTabGmailUser5}
+                                tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[4]}
                                 image={GmailImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingGmail && isFirstReloadGmail}
+                                isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
+                                isFirstLoad={isFirstLoad}
                             />
-                            <EmailSection
-                                accountEmail="dcruzjovita651@gmail.com"
-                                ageOfEmail="3 Years Old Email"
-                                selectedTab={selectedTabUser6}
-                                setSelectedTab={setSelectedTabUser6}
-                                tabs={tabs}
+                            <GmailSection
+                                accountEmail="watsonjetpeter@gmail.com"
+                                ageOfEmail="5 Years Old"
+                                selectedTab={selectedTabGmailUser6}
+                                setSelectedTab={setSelectedTabGmailUser6}
+                                tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[5]}
                                 image={GmailImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingGmail && isFirstReloadGmail}
+                                isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
-                            />
-                            <EmailSection
-                                accountEmail="doctsashawn@gmail.com"
-                                ageOfEmail="5 Years Old Email"
-                                selectedTab={selectedTabUser7}
-                                setSelectedTab={setSelectedTabUser7}
-                                tabs={tabs}
-                                filteredTabResults={filteredEmails.gmail[6]}
-                                image={GmailImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
-                                setSearchQuery={setSearchQuery}
+                                isFirstLoad={isFirstLoad}
                             />
                         </>
                     ) : null}
@@ -664,6 +694,213 @@ export default function TestingSection() {
                 </div>
             </div>
         </section>
+    );
+}
+
+function GmailSection({
+    accountEmail,
+    ageOfEmail,
+    selectedTab,
+    setSelectedTab,
+    tabs,
+    filteredTabResults,
+    image,
+    isLoading,
+    isRealtimeLoader,
+    setSearchQuery,
+    isFirstLoad,
+}: {
+    accountEmail: string;
+    ageOfEmail: string;
+    selectedTab: string;
+    setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
+    tabs: { label: string; value: string }[];
+    filteredTabResults: { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[];
+    image: any;
+    isLoading: boolean;
+    isRealtimeLoader: boolean;
+    setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
+    isFirstLoad: boolean;
+}) {
+    return (
+        <div
+            className={`w-full shadow-lg rounded-lg p-3 mb-2 
+        ${selectedTab === "Primary" ? "bg-green-50" :
+                    selectedTab === "Spam" ? "bg-red-50" :
+                        selectedTab === "Promotions" ? "bg-purple-50" :
+                            selectedTab === "Social" ? "bg-yellow-50" :
+                                selectedTab === "Updates" ? "bg-orange-50" : "bg-gray-50"}`}
+        >
+            <div className="text-center mb-1">
+                <h2 className="text-[15px] sm:text-lg font-bold text-gray-800">
+                    Gmail Results for:{" "}
+                    <span className={`${selectedTab === "Primary" ? "text-green-500" :
+                        selectedTab === "Spam" ? "text-red-500" :
+                            selectedTab === "Promotions" ? "text-purple-500" :
+                                selectedTab === "Social" ? "text-yellow-500" :
+                                    selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"}`}>
+                        {accountEmail}
+                    </span>
+                </h2>
+
+                <p className={`${selectedTab === "Primary" ? "text-green-500" :
+                    selectedTab === "Spam" ? "text-red-500" :
+                        selectedTab === "Promotions" ? "text-purple-500" :
+                            selectedTab === "Social" ? "text-yellow-500" :
+                                selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"} text-[12px] sm:text-[14px] font-semibold`}>
+                    {ageOfEmail}
+                </p>
+            </div>
+
+            {/* Realtime Loader */}
+            <div className="flex justify-end items-end mb-2">
+                {isRealtimeLoader ? (
+                    <motion.div
+                        className={`${selectedTab === "Primary" ? "text-green-500" :
+                            selectedTab === "Spam" ? "text-red-500" :
+                                selectedTab === "Promotions" ? "text-purple-500" :
+                                    selectedTab === "Social" ? "text-yellow-500" :
+                                        selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"} flex justify-center items-center`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        title="Realtime Fetching"
+                    >
+                        <TbLoader3 className="animate-spin text-xl" />
+                    </motion.div>
+                ) : (
+                    <motion.div
+                        className={`${selectedTab === "Primary" ? "text-green-500" :
+                            selectedTab === "Spam" ? "text-red-500" :
+                                selectedTab === "Promotions" ? "text-purple-500" :
+                                    selectedTab === "Social" ? "text-yellow-500" :
+                                        selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"} flex justify-center items-center`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        title="Fetched"
+                    >
+                        <FaCheck className="text-xl" />
+                    </motion.div>
+                )}
+            </div>
+
+            <div className="flex justify-between rounded-lg shadow-inner mb-6 flex-wrap">
+                {tabs.map((tab) => (
+                    <button
+                        key={tab.value}
+                        onClick={() => setSelectedTab(tab.value)}
+                        className={`flex-1 px-6 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${selectedTab === tab.value
+                            ? tab.value === "Primary" ? "bg-green-500 text-white shadow-md" :
+                                tab.value === "Spam" ? "bg-red-500 text-white shadow-md" :
+                                    tab.value === "Promotions" ? "bg-purple-500 text-white shadow-md" :
+                                        tab.value === "Social" ? "bg-yellow-500 text-white shadow-md" :
+                                            tab.value === "Updates" ? "bg-orange-500 text-white shadow-md" : ""
+                            : "bg-white text-gray-800 hover:bg-gray-200"}`}
+                    >
+                        {tab.label}
+                    </button>
+                ))}
+            </div>
+
+            <div
+                className={`space-y-4 p-3 rounded-lg shadow-md ${selectedTab === "Primary" ? "bg-green-100" :
+                    selectedTab === "Spam" ? "bg-red-100" :
+                        selectedTab === "Promotions" ? "bg-purple-100" :
+                            selectedTab === "Social" ? "bg-yellow-100" :
+                                selectedTab === "Updates" ? "bg-orange-100" : "bg-gray-100"}`}
+            >
+                {isFirstLoad || isLoading ? (
+                    <motion.div
+                        className="flex justify-center items-center h-32"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                    >
+                        <FaSpinner
+                            className={`animate-spin text-2xl ${selectedTab === "Primary" ? "text-green-500" :
+                                selectedTab === "Spam" ? "text-red-500" :
+                                    selectedTab === "Promotions" ? "text-purple-500" :
+                                        selectedTab === "Social" ? "text-yellow-500" :
+                                            selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"}`}
+                        />
+                    </motion.div>
+                ) : filteredTabResults.length > 0 ? (
+                    <div className="max-h-64 overflow-y-auto">
+                        <AnimatePresence>
+                            {filteredTabResults.map((result, index) => (
+                                <motion.div
+                                    key={index}
+                                    onClick={() => {
+                                        const spoofName = result.name?.split('<')[0]?.trim() || "Unknown Sender";
+                                        setSearchQuery(spoofName);
+                                    }}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0, scale: 0.95 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="flex flex-col sm:flex-row items-center justify-between bg-white duration-300 hover:bg-gray-200 cursor-pointer p-4 rounded-lg shadow gap-3 sm:gap-0 w-full mb-2"
+                                >
+                                    <div className="flex flex-col sm:flex-row items-center gap-4">
+                                        <div className="relative w-10 h-10">
+                                            <Image
+                                                src={image}
+                                                alt="Gmail logo"
+                                                fill={true}
+                                                layout="fill"
+                                                objectFit="contain"
+                                                className="rounded-md"
+                                            />
+                                        </div>
+                                        <div className="flex flex-col justify-center sm:justify-start items-center sm:items-start">
+                                            <p className="text-[13px] text-center sm:text-start font-medium text-gray-800">
+                                                {(() => {
+                                                    const match = result.name?.match(/^(.*?)<(.*)>$/);
+                                                    const spoofName = match?.[1]?.trim() || "Unknown Sender";
+                                                    const email = match?.[2] || result.email || "Unknown Email";
+
+                                                    // Mask the part between @ and the last dot
+                                                    const maskedEmail = email.replace(/@(.*?)(\..*)$/, (_, domain, tld) => `@***${tld}`);
+
+                                                    return `${spoofName}, ${maskedEmail}`;
+                                                })()}
+                                            </p>
+                                            <p className="text-[12px] text-center sm:text-start text-gray-500">
+                                                {result.subject || "No Subject"}
+                                            </p>
+                                            <p className="text-[12px] text-center sm:text-start text-gray-500">
+                                                {new Date(result.date).toLocaleString()}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    {/* Status Badge */}
+                                    <motion.span
+                                        key={result.status}
+                                        initial={{ opacity: 0, scale: 0.9 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        className={`px-4 py-2 rounded-full w-full sm:w-auto text-white ${result.status === "primary" ? "bg-green-500" :
+                                                result.status === "spam" ? "bg-red-500" :
+                                                    result.status === "promotions" ? "bg-purple-500" :
+                                                        result.status === "social" ? "bg-yellow-500" :
+                                                            result.status === "updates" ? "bg-orange-500" : "bg-gray-500"
+                                            }`}
+                                    >
+                                        {result.status}
+                                    </motion.span>
+                                </motion.div>
+                            ))}
+                        </AnimatePresence>
+                    </div>
+                ) : (
+                    <p className="text-gray-600 text-center">
+                        No emails found in the last 5 minutes.
+                    </p>
+                )}
+            </div>
+        </div>
     );
 }
 

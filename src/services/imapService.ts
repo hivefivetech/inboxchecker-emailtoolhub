@@ -94,49 +94,6 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
  * @returns Object containing emails for all accounts.
  */
 export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "[Gmail]/Spam"]) {
-    // Gmail
-    const gmailuser1Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_GMAIL_FIRST!,
-        process.env.IMAP_PASSWORD_GMAIL_FIRST!,
-        folders
-    );
-
-    const gmailuser2Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_GMAIL_SECOND!,
-        process.env.IMAP_PASSWORD_GMAIL_SECOND!,
-        folders
-    );
-
-    const gmailuser3Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_GMAIL_THIRD!,
-        process.env.IMAP_PASSWORD_GMAIL_THIRD!,
-        folders
-    );
-
-    const gmailuser4Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_GMAIL_FOURTH!,
-        process.env.IMAP_PASSWORD_GMAIL_FOURTH!,
-        folders
-    );
-
-    const gmailuser5Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_GMAIL_FIFTH!,
-        process.env.IMAP_PASSWORD_GMAIL_FIFTH!,
-        folders
-    );
-
-    const gmailuser6Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_GMAIL_SIXTH!,
-        process.env.IMAP_PASSWORD_GMAIL_SIXTH!,
-        folders
-    );
-
-    const gmailuser7Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_GMAIL_SEVENTH!,
-        process.env.IMAP_PASSWORD_GMAIL_SEVENTH!,
-        folders
-    );
-
     // Yahoo
     const yahooFolders = ["Inbox", "Bulk"];
     const yahoouser1Emails = await fetchEmailsForAccount(
@@ -186,13 +143,6 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "
     );
 
     return {
-        gmailuser1: gmailuser1Emails,
-        gmailuser2: gmailuser2Emails,
-        gmailuser3: gmailuser3Emails,
-        gmailuser4: gmailuser4Emails,
-        gmailuser5: gmailuser5Emails,
-        gmailuser6: gmailuser6Emails,
-        gmailuser7: gmailuser7Emails,
         yahoouser1: yahoouser1Emails,
         yahoouser2: yahoouser2Emails,
         zohouser1: zohouser1Emails,
