@@ -303,7 +303,7 @@ export default function TestingSection() {
         };
 
         fetchGmailEmails();
-        const interval = setInterval(fetchGmailEmails, 10000);
+        const interval = setInterval(fetchGmailEmails, 5000);
 
         return () => clearInterval(interval);
     }, []);
@@ -346,7 +346,7 @@ export default function TestingSection() {
         };
 
         fetchEmails();
-        const interval = setInterval(fetchEmails, 10000);
+        const interval = setInterval(fetchEmails, 5000);
 
         return () => clearInterval(interval);
     }, []);
