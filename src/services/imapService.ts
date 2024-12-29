@@ -57,6 +57,10 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
                 const range = `${start}:${status.messages}`;
 
                 for await (const message of client.fetch(range, { envelope: true })) {
+                    const isYahoo = user.includes("@yahoo.com");
+                    const isZoho = user.includes("@zoho.com") || user.includes("@zohomail.in");
+                    const isYandex = user.includes("@yandex.com") || user.includes("@yandex.ru");
+
                     allEmails.push({
                         subject: message.envelope.subject || "No Subject",
                         from: {
@@ -64,7 +68,12 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
                             address: message.envelope.from?.[0]?.address || "Unknown Address",
                         },
                         date: new Date(message.envelope.date || new Date()),
-                        status: folder.toLowerCase().includes("spam") ? "Spam" : "Inbox",
+                        status:
+                            (isYahoo && folder.toLowerCase().includes("bulk")) ||
+                                (isZoho && folder.toLowerCase().includes("spam")) || 
+                                (isYandex && folder.toLowerCase().includes("spam"))
+                                ? "Spam"
+                                : "Inbox",
                     });
                 }
             } finally {
