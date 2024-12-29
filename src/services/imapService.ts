@@ -15,7 +15,7 @@ interface Email {
  * Fetch emails for a single account.
  * @param user - Email user.
  * @param pass - Email password.
- * @param folders - Array of folders to fetch emails from (e.g., ["INBOX", "[Gmail]/Spam"]).
+ * @param folders - Array of folders to fetch emails from.
  * @returns Promise<Email[]> - Array of emails.
  */
 async function fetchEmailsForAccount(user: string, pass: string, folders: string[]): Promise<Email[]> {
@@ -33,10 +33,7 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
                     : "imap.gmail.com",
         port: 993,
         secure: true,
-        auth: {
-            user,
-            pass,
-        },
+        auth: { user, pass },
     };
 
     const client = new ImapFlow(imapConfig);
@@ -56,22 +53,18 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
                     continue;
                 }
 
-                const start = Math.max(1, (status.messages ?? 0) - 9);
+                const start = Math.max(1, (status.messages ?? 0) - 5); // Fetch the last 5 emails
                 const range = `${start}:${status.messages}`;
 
                 for await (const message of client.fetch(range, { envelope: true })) {
-                    const emailDate = new Date(message.envelope.date || new Date());
                     allEmails.push({
                         subject: message.envelope.subject || "No Subject",
                         from: {
-                            name: message.envelope.from[0]?.name || "Unknown Sender",
-                            address: message.envelope.from[0]?.address || "Unknown Address",
+                            name: message.envelope.from?.[0]?.name || "Unknown Sender",
+                            address: message.envelope.from?.[0]?.address || "Unknown Address",
                         },
-                        date: emailDate,
-                        status:
-                            folder.toLowerCase().includes("spam") || folder.toLowerCase().includes("bulk")
-                                ? "Spam"
-                                : "Inbox",
+                        date: new Date(message.envelope.date || new Date()),
+                        status: folder.toLowerCase().includes("spam") ? "Spam" : "Inbox",
                     });
                 }
             } finally {
@@ -89,66 +82,67 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
 }
 
 /**
- * Fetch emails for all accounts (Gmail + Yahoo).
+ * Fetch emails for all accounts.
  * @param folders - Array of folders to fetch emails from.
- * @returns Object containing emails for all accounts.
+ * @returns Promise<object> - Emails grouped by account.
  */
-export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "[Gmail]/Spam"]) {
-    // Yahoo
-    const yahooFolders = ["Inbox", "Bulk"];
-    const yahoouser1Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_YAHOO_FIRST!,
-        process.env.IMAP_PASSWORD_YAHOO_FIRST!,
-        yahooFolders
+export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "Spam"]) {
+    const accounts = [
+        {
+            user: process.env.IMAP_USER_YAHOO_FIRST!,
+            pass: process.env.IMAP_PASSWORD_YAHOO_FIRST!,
+            folders: ["Inbox", "Bulk"],
+            label: "yahoouser1",
+        },
+        {
+            user: process.env.IMAP_USER_YAHOO_SECOND!,
+            pass: process.env.IMAP_PASSWORD_YAHOO_SECOND!,
+            folders: ["Inbox", "Bulk"],
+            label: "yahoouser2",
+        },
+        {
+            user: process.env.IMAP_USER_ZOHO_FIRST!,
+            pass: process.env.IMAP_PASSWORD_ZOHO_FIRST!,
+            folders: ["Inbox", "Spam"],
+            label: "zohouser1",
+        },
+        {
+            user: process.env.IMAP_USER_ZOHO_SECOND!,
+            pass: process.env.IMAP_PASSWORD_ZOHO_SECOND!,
+            folders: ["Inbox", "Spam"],
+            label: "zohouser2",
+        },
+        {
+            user: process.env.IMAP_USER_ZOHO_THIRD!,
+            pass: process.env.IMAP_PASSWORD_ZOHO_THIRD!,
+            folders: ["Inbox", "Spam"],
+            label: "zohouser3",
+        },
+        {
+            user: process.env.IMAP_USER_YANDEX_FIRST!,
+            pass: process.env.IMAP_PASSWORD_YANDEX_FIRST!,
+            folders: ["Inbox", "Spam"],
+            label: "yandexuser1",
+        },
+        {
+            user: process.env.IMAP_USER_YANDEX_SECOND!,
+            pass: process.env.IMAP_PASSWORD_YANDEX_SECOND!,
+            folders: ["Inbox", "Spam"],
+            label: "yandexuser2",
+        },
+    ];
+
+    const results = await Promise.all(
+        accounts.map(async (account) => {
+            try {
+                const emails = await fetchEmailsForAccount(account.user, account.pass, account.folders);
+                return { [account.label]: emails };
+            } catch (error) {
+                console.error(`Error fetching emails for ${account.label}:`, error);
+                return { [account.label]: [] };
+            }
+        })
     );
 
-    const yahoouser2Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_YAHOO_SECOND!,
-        process.env.IMAP_PASSWORD_YAHOO_SECOND!,
-        yahooFolders
-    );
-
-    // Zoho
-    const zohoFolders = ["Inbox", "Spam"];
-    const zohouser1Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_ZOHO_FIRST!,
-        process.env.IMAP_PASSWORD_ZOHO_FIRST!,
-        zohoFolders
-    );
-
-    const zohouser2Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_ZOHO_SECOND!,
-        process.env.IMAP_PASSWORD_ZOHO_SECOND!,
-        zohoFolders
-    );
-
-    const zohouser3Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_ZOHO_THIRD!,
-        process.env.IMAP_PASSWORD_ZOHO_THIRD!,
-        zohoFolders
-    );
-
-    // Yandex
-    const yandexFolders = ["Inbox", "Spam"];
-    const yandexuser1Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_YANDEX_FIRST!,
-        process.env.IMAP_PASSWORD_YANDEX_FIRST!,
-        yandexFolders
-    );
-
-    const yandexuser2Emails = await fetchEmailsForAccount(
-        process.env.IMAP_USER_YANDEX_SECOND!,
-        process.env.IMAP_PASSWORD_YANDEX_SECOND!,
-        yandexFolders
-    );
-
-    return {
-        yahoouser1: yahoouser1Emails,
-        yahoouser2: yahoouser2Emails,
-        zohouser1: zohouser1Emails,
-        zohouser2: zohouser2Emails,
-        zohouser3: zohouser3Emails,
-        yandexuser1: yandexuser1Emails,
-        yandexuser2: yandexuser2Emails,
-    };
+    return results.reduce((acc, result) => ({ ...acc, ...result }), {});
 }

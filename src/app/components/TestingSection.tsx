@@ -36,6 +36,7 @@ interface GmailResults {
     };
 }
 
+// Gmail
 const fetchGmailEmailsFromServer = async (): Promise<GmailResults> => {
     try {
         const response = await fetch("/api/gmails");
@@ -81,99 +82,36 @@ const fetchGmailEmailsFromServer = async (): Promise<GmailResults> => {
 // IMAP
 const fetchEmailsFromServer = async () => {
     try {
-        // console.log('Here')
         const response = await fetch("/api/emails");
-        // console.log('response: ', response)
-        if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
-        }
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
         const data = await response.json();
-        // console.log('data: ', data)
+
         if (data.success) {
             return {
-                // YAHOO
-                yahoouser1: data.emails.yahoouser1.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status || "Inbox",
-                    date: new Date(email.date),
-                })),
-                yahoouser2: data.emails.yahoouser2.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status || "Inbox",
-                    date: new Date(email.date),
-                })),
-
-                // ZOHO
-                zohouser1: data.emails.zohouser1.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status || "Inbox",
-                    date: new Date(email.date),
-                })),
-                zohouser2: data.emails.zohouser2.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status || "Inbox",
-                    date: new Date(email.date),
-                })),
-                zohouser3: data.emails.zohouser3.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status || "Inbox",
-                    date: new Date(email.date),
-                })),
-
-                // YANDEX
-                yandexuser1: data.emails.yandexuser1.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status || "Inbox",
-                    date: new Date(email.date),
-                })),
-                yandexuser2: data.emails.yandexuser2.map((email: any) => ({
-                    name: email.from?.name || "Unknown Sender",
-                    email: email.from?.address || "Unknown Email",
-                    maskedEmail: email.from?.address
-                        ? email.from.address.replace(/@(.*)\./, "@*****.")
-                        : "Unknown Email",
-                    subject: email.subject || "No Subject",
-                    status: email.status || "Inbox",
-                    date: new Date(email.date),
-                })),
+                yahoouser1: (data.emails.yahoouser1 || []).map(formatEmail),
+                yahoouser2: (data.emails.yahoouser2 || []).map(formatEmail),
+                zohouser1: (data.emails.zohouser1 || []).map(formatEmail),
+                zohouser2: (data.emails.zohouser2 || []).map(formatEmail),
+                zohouser3: (data.emails.zohouser3 || []).map(formatEmail),
+                yandexuser1: (data.emails.yandexuser1 || []).map(formatEmail),
+                yandexuser2: (data.emails.yandexuser2 || []).map(formatEmail),
             };
         }
+
         return { yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
     } catch (error) {
         console.error("Error fetching emails from API:", error);
         return { yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
     }
 };
+
+const formatEmail = (email: any) => ({
+    name: email.from?.name || "Unknown Sender",
+    email: email.from?.address || "Unknown Email",
+    subject: email.subject || "No Subject",
+    status: email.status || "Inbox",
+    date: new Date(email.date),
+});
 
 export default function TestingSection() {
     const [isLoadingGmail, setIsLoadingGmail] = useState(true);
@@ -303,7 +241,7 @@ export default function TestingSection() {
         };
 
         fetchGmailEmails();
-        const interval = setInterval(fetchGmailEmails, 5000);
+        const interval = setInterval(fetchGmailEmails, 2000);
 
         return () => clearInterval(interval);
     }, []);
@@ -346,7 +284,7 @@ export default function TestingSection() {
         };
 
         fetchEmails();
-        const interval = setInterval(fetchEmails, 5000);
+        const interval = setInterval(fetchEmails, 4000);
 
         return () => clearInterval(interval);
     }, []);
@@ -375,6 +313,7 @@ export default function TestingSection() {
             { results: resultsGmailUser6, selectedTab: selectedTabGmailUser6 },
         ],
     };
+
     const filterEmails = (emailData: any) => {
         return emailData.map(({ results, selectedTab }: { results: EmailResult[]; selectedTab: string }) => {
             const allEmails = selectedTab.toLowerCase() === "all"; // Check if "All" tab is selected
@@ -394,6 +333,7 @@ export default function TestingSection() {
         yandex: filterEmails(emailResults.yandex),
         gmail: filterEmails(emailResults.gmail),
     };
+    // Filter Emails End
 
     // Percentage
     // Gmail
@@ -461,6 +401,7 @@ export default function TestingSection() {
     ];
 
     const gmailPercentages = calculatePercentage(gmailAllEmails, searchQuery);
+    // Percentage End
 
     return (
         <section className="relative bg-gray-50 py-20 px-6">
@@ -638,6 +579,7 @@ export default function TestingSection() {
                         Show All Spam
                     </button>
                 </div>
+
                 {/* More Filters */}
                 <div className="flex justify-center gap-4 mb-4 max-w-5xl mx-auto flex-wrap">
                     <button

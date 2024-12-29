@@ -20,7 +20,6 @@ export async function fetchGmailMessages(tokenFile: string, query = "") {
     const gmail = google.gmail({ version: "v1", auth: oAuth2Client });
 
     try {
-        // Fetch the list of messages based on the query
         const response = await gmail.users.messages.list({
             userId: "me",
             maxResults: 5, // Fetch only the latest 5 emails
@@ -28,27 +27,34 @@ export async function fetchGmailMessages(tokenFile: string, query = "") {
         });
 
         const messages = response.data.messages || [];
-        const messageDetails = [];
-
-        // Fetch details for each message
-        for (const message of messages) {
-            const details = await gmail.users.messages.get({
-                userId: "me",
-                id: message.id!,
-            });
-
-            const email = {
-                id: details.data.id,
-                subject: details.data.payload?.headers?.find((h) => h.name === "Subject")?.value || "No Subject",
-                from: {
-                    name: details.data.payload?.headers?.find((h) => h.name === "From")?.value || "Unknown Sender",
-                },
-                date: details.data.payload?.headers?.find((h) => h.name === "Date")?.value || new Date(),
-                snippet: details.data.snippet,
-            };
-            messageDetails.push(email);
+        if (messages.length === 0) {
+            return [];
         }
-        return messageDetails;
+
+        // Fetch details concurrently for all messages
+        const messageDetails = await Promise.all(
+            messages.map((message) =>
+                gmail.users.messages.get({
+                    userId: "me",
+                    id: message.id!,
+                })
+            )
+        );
+
+        return messageDetails.map((details) => ({
+            id: details.data.id,
+            subject:
+                details.data.payload?.headers?.find((h) => h.name === "Subject")?.value || "No Subject",
+            from: {
+                name:
+                    details.data.payload?.headers?.find((h) => h.name === "From")?.value ||
+                    "Unknown Sender",
+            },
+            date:
+                details.data.payload?.headers?.find((h) => h.name === "Date")?.value ||
+                new Date(),
+            snippet: details.data.snippet,
+        }));
     } catch (error) {
         console.error("Error fetching Gmail messages:", error);
         return [];

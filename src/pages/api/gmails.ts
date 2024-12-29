@@ -13,17 +13,26 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 "watsonjetpeter-token.json",
             ];
 
-            const gmailResults: Record<string, any> = {};
-
-            for (const account of gmailAccounts) {
-                gmailResults[account] = {
+            const fetchEmailsForAccount = async (account: string) => {
+                return {
                     primary: await fetchGmailMessages(account, "category:primary"),
                     social: await fetchGmailMessages(account, "category:social"),
                     promotions: await fetchGmailMessages(account, "category:promotions"),
                     updates: await fetchGmailMessages(account, "category:updates"),
                     spam: await fetchGmailMessages(account, "label:spam"),
                 };
-            }
+            };
+
+            // Fetch all accounts concurrently
+            const results = await Promise.all(
+                gmailAccounts.map((account) =>
+                    fetchEmailsForAccount(account).then((data) => ({
+                        [account]: data,
+                    }))
+                )
+            );
+
+            const gmailResults = results.reduce((acc, result) => Object.assign(acc, result), {});
 
             res.status(200).json({ success: true, gmailResults });
         } catch (error) {
