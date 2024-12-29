@@ -897,7 +897,7 @@ function GmailSection({
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col justify-center items-end gap-1">
+                                    <div className="flex flex-row-reverse justify-end items-center gap-1">
                                         {/* Status Badge */}
                                         <motion.span
                                             key={result.status}
