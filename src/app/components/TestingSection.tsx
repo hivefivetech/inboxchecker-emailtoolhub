@@ -135,6 +135,9 @@ export default function TestingSection() {
     const [resultsGmailUser6, setResultsGmailUser6] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
+    const [resultsGmailUser7, setResultsGmailUser7] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
     // Yahoo
     const [resultsYahooUser1, setResultsYahooUser1] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
@@ -181,6 +184,7 @@ export default function TestingSection() {
     const [selectedTabGmailUser4, setSelectedTabGmailUser4] = useState("All");
     const [selectedTabGmailUser5, setSelectedTabGmailUser5] = useState("All");
     const [selectedTabGmailUser6, setSelectedTabGmailUser6] = useState("All");
+    const [selectedTabGmailUser7, setSelectedTabGmailUser7] = useState("All");
 
     const gmailTabs = [
         { label: "All", value: "All" },
@@ -234,6 +238,11 @@ export default function TestingSection() {
                 const tabs = emails["watsonjetpeter-token.json"];
                 const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setResultsGmailUser6(allEmails);
+            }
+            if (emails["wardenleon484-token.json"]) {
+                const tabs = emails["wardenleon484-token.json"];
+                const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+                setResultsGmailUser7(allEmails);
             }
             setIsFirstReloadGmail(false);
             setIsLoadingGmail(false);
@@ -311,6 +320,7 @@ export default function TestingSection() {
             { results: resultsGmailUser4, selectedTab: selectedTabGmailUser4 },
             { results: resultsGmailUser5, selectedTab: selectedTabGmailUser5 },
             { results: resultsGmailUser6, selectedTab: selectedTabGmailUser6 },
+            { results: resultsGmailUser7, selectedTab: selectedTabGmailUser7 },
         ],
     };
 
@@ -398,6 +408,7 @@ export default function TestingSection() {
         ...resultsGmailUser4,
         ...resultsGmailUser5,
         ...resultsGmailUser6,
+        ...resultsGmailUser7,
     ];
 
     const gmailPercentages = calculatePercentage(gmailAllEmails, searchQuery);
@@ -550,6 +561,7 @@ export default function TestingSection() {
                             setSelectedTabGmailUser4("All");
                             setSelectedTabGmailUser5("All");
                             setSelectedTabGmailUser6("All");
+                            setSelectedTabGmailUser7("All");
                         }}
                         className="relative px-6 py-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-full shadow-lg hover:from-blue-500 hover:to-blue-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-blue-300 focus:outline-none"
                     >
@@ -572,6 +584,7 @@ export default function TestingSection() {
                             setSelectedTabGmailUser4("Primary");
                             setSelectedTabGmailUser5("Primary");
                             setSelectedTabGmailUser6("Primary");
+                            setSelectedTabGmailUser7("Primary");
                         }}
                         className="relative px-6 py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full shadow-lg hover:from-green-500 hover:to-green-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-green-300 focus:outline-none"
                     >
@@ -727,6 +740,19 @@ export default function TestingSection() {
                                 setSelectedTab={setSelectedTabGmailUser6}
                                 tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[5]}
+                                image={GmailImage}
+                                isRealtimeLoader={isRealtimeLoadingGmail}
+                                setSearchQuery={setSearchQuery}
+                                isFirstReloadGmail={isFirstReloadGmail}
+                                isLoadingGmail={isLoadingGmail && isFirstReloadGmail}
+                            />
+                            <GmailSection
+                                accountEmail="wardenleon484@gmail.com"
+                                ageOfEmail="8 Years Old"
+                                selectedTab={selectedTabGmailUser7}
+                                setSelectedTab={setSelectedTabGmailUser7}
+                                tabs={gmailTabs}
+                                filteredTabResults={filteredEmails.gmail[6]}
                                 image={GmailImage}
                                 isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}

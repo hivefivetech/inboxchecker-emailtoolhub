@@ -11,6 +11,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 "stellajamsonusa-token.json",
                 "thomasadward5-token.json",
                 "watsonjetpeter-token.json",
+                "wardenleon484-token.json",
             ];
 
             const fetchEmailsForAccount = async (account: string) => {
