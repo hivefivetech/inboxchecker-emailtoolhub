@@ -315,9 +315,9 @@ export default function TestingSection() {
                 setIsLoading(true);
             }
             setIsRealtimeLoader(true);
-    
+
             const { yahoouser1, yahoouser2, zohouser1, zohouser2, zohouser3, yandexuser1, yandexuser2 } = await fetchEmailsFromServer();
-    
+
             setResultsYahooUser1(
                 yahoouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
             );
@@ -339,17 +339,17 @@ export default function TestingSection() {
             setResultsYandexUser2(
                 yandexuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
             );
-    
+
             setIsLoading(false);
             setIsFirstLoad(false);
             setIsRealtimeLoader(false);
         };
-    
+
         fetchEmails();
         const interval = setInterval(fetchEmails, 10000);
-    
+
         return () => clearInterval(interval);
-    }, []);    
+    }, []);
 
     // Filter emails based on the selected tab and search query
     const emailResults = {
@@ -395,6 +395,73 @@ export default function TestingSection() {
         gmail: filterEmails(emailResults.gmail),
     };
 
+    // Percentage
+    // Gmail
+    const calculatePercentage = (emails: EmailResult[], query: string) => {
+        const filteredEmails = emails.filter(
+            (email) =>
+                email.name.toLowerCase().includes(query.toLowerCase()) ||
+                email.email.toLowerCase().includes(query.toLowerCase())
+        );
+
+        const totalEmails = filteredEmails.length;
+
+        if (totalEmails === 0) {
+            return { inbox: 0, spam: 0 };
+        }
+
+        const inboxCount = filteredEmails.filter(
+            (email) =>
+                ["primary", "updates", "social", "promotions"].includes(email.status.toLowerCase())
+        ).length;
+        const spamCount = filteredEmails.filter((email) => email.status.toLowerCase() === "spam").length;
+
+        return {
+            inbox: Math.round((inboxCount / totalEmails) * 100),
+            spam: Math.round((spamCount / totalEmails) * 100),
+        };
+    };
+    // Rest All
+    const calculateSimplePercentage = (emails: EmailResult[], query: string) => {
+        const filteredEmails = emails.filter(
+            (email) =>
+                email.name.toLowerCase().includes(query.toLowerCase()) ||
+                email.email.toLowerCase().includes(query.toLowerCase())
+        );
+
+        const totalEmails = filteredEmails.length;
+
+        if (totalEmails === 0) {
+            return { inbox: 0, spam: 0 };
+        }
+
+        const inboxCount = filteredEmails.filter((email) => email.status.toLowerCase() === "inbox").length;
+        const spamCount = filteredEmails.filter((email) => email.status.toLowerCase() === "spam").length;
+
+        return {
+            inbox: Math.round((inboxCount / totalEmails) * 100),
+            spam: Math.round((spamCount / totalEmails) * 100),
+        };
+    };
+
+    const yahooAllEmails = [...resultsYahooUser1, ...resultsYahooUser2];
+    const zohoAllEmails = [...resultsZohoUser1, ...resultsZohoUser2, ...resultsZohoUser3];
+    const yandexAllEmails = [...resultsYandexUser1, ...resultsYandexUser2];
+    const yahooPercentages = calculateSimplePercentage(yahooAllEmails, searchQuery);
+    const zohoPercentages = calculateSimplePercentage(zohoAllEmails, searchQuery);
+    const yandexPercentages = calculateSimplePercentage(yandexAllEmails, searchQuery);
+
+    const gmailAllEmails = [
+        ...resultsGmailUser1,
+        ...resultsGmailUser2,
+        ...resultsGmailUser3,
+        ...resultsGmailUser4,
+        ...resultsGmailUser5,
+        ...resultsGmailUser6,
+    ];
+
+    const gmailPercentages = calculatePercentage(gmailAllEmails, searchQuery);
+
     return (
         <section className="relative bg-gray-50 py-20 px-6">
             <div className="text-center">
@@ -406,7 +473,7 @@ export default function TestingSection() {
                 </p>
 
                 {/* Search Input */}
-                <div className="flex justify-center mb-6 px-4 max-w-5xl mx-auto">
+                <div className="flex justify-center items-center mb-6 px-4 max-w-5xl mx-auto">
                     <div className="w-full max-w-4xl p-6 bg-white rounded-lg shadow-md duration-300 hover:shadow-xl">
                         <h2 className="text-lg font-semibold text-gray-800 mb-4">
                             Search Mail
@@ -426,6 +493,102 @@ export default function TestingSection() {
                             />
                         </motion.div>
                     </div>
+                </div>
+
+                {/* Percentages */}
+                <div className="flex justify-center items-center max-w-5xl mx-auto mt-2 mb-3">
+                    {searchQuery && (
+                        <div className="w-full max-w-4xl p-4 bg-white rounded-lg shadow">
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">Search Results Percentage</h3>
+                            {/* Gmail */}
+                            <div className="mb-4">
+                                <h4 className="text-sm font-bold text-gray-800">Gmail</h4>
+                                <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div
+                                        className="absolute h-full bg-green-500"
+                                        style={{ width: `${gmailPercentages.inbox}%` }}
+                                    ></div>
+                                    <div
+                                        className="absolute h-full bg-red-500"
+                                        style={{
+                                            width: `${gmailPercentages.spam}%`,
+                                            left: `${gmailPercentages.inbox}%`,
+                                        }}
+                                    ></div>
+                                </div>
+                                <p className="mt-1 text-xs text-gray-600">
+                                    Inbox: <span className="font-bold text-green-500">{gmailPercentages.inbox}%</span>,
+                                    Spam: <span className="font-bold text-red-500">{gmailPercentages.spam}%</span>
+                                </p>
+                            </div>
+
+                            {/* Yahoo */}
+                            <div className="mb-4">
+                                <h4 className="text-sm font-bold text-gray-800">Yahoo</h4>
+                                <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div
+                                        className="absolute h-full bg-green-500"
+                                        style={{ width: `${yahooPercentages.inbox}%` }}
+                                    ></div>
+                                    <div
+                                        className="absolute h-full bg-red-500"
+                                        style={{
+                                            width: `${yahooPercentages.spam}%`,
+                                            left: `${yahooPercentages.inbox}%`,
+                                        }}
+                                    ></div>
+                                </div>
+                                <p className="mt-1 text-xs text-gray-600">
+                                    Inbox: <span className="font-bold text-green-500">{yahooPercentages.inbox}%</span>,
+                                    Spam: <span className="font-bold text-red-500">{yahooPercentages.spam}%</span>
+                                </p>
+                            </div>
+
+                            {/* Zoho */}
+                            <div className="mb-4">
+                                <h4 className="text-sm font-bold text-gray-800">Zoho</h4>
+                                <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div
+                                        className="absolute h-full bg-green-500"
+                                        style={{ width: `${zohoPercentages.inbox}%` }}
+                                    ></div>
+                                    <div
+                                        className="absolute h-full bg-red-500"
+                                        style={{
+                                            width: `${zohoPercentages.spam}%`,
+                                            left: `${zohoPercentages.inbox}%`,
+                                        }}
+                                    ></div>
+                                </div>
+                                <p className="mt-1 text-xs text-gray-600">
+                                    Inbox: <span className="font-bold text-green-500">{zohoPercentages.inbox}%</span>,
+                                    Spam: <span className="font-bold text-red-500">{zohoPercentages.spam}%</span>
+                                </p>
+                            </div>
+
+                            {/* Yandex */}
+                            <div className="mb-4">
+                                <h4 className="text-sm font-bold text-gray-800">Yandex</h4>
+                                <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div
+                                        className="absolute h-full bg-green-500"
+                                        style={{ width: `${yandexPercentages.inbox}%` }}
+                                    ></div>
+                                    <div
+                                        className="absolute h-full bg-red-500"
+                                        style={{
+                                            width: `${yandexPercentages.spam}%`,
+                                            left: `${yandexPercentages.inbox}%`,
+                                        }}
+                                    ></div>
+                                </div>
+                                <p className="mt-1 text-xs text-gray-600">
+                                    Inbox: <span className="font-bold text-green-500">{yandexPercentages.inbox}%</span>,
+                                    Spam: <span className="font-bold text-red-500">{yandexPercentages.spam}%</span>
+                                </p>
+                            </div>
+                        </div>
+                    )}
                 </div>
 
                 {/* Show Filter */}
@@ -821,7 +984,7 @@ function GmailSection({
                                                 tab.value === "Updates" ? "bg-orange-500 text-white shadow-md" : ""
                             : "bg-white text-gray-800 hover:bg-gray-200"}`}
                     >
-                        {tab.label}
+                        {tab.label === "Primary" ? "Inbox" : tab.label}
                     </button>
                 ))}
             </div>
@@ -903,7 +1066,7 @@ function GmailSection({
                                             key={result.status}
                                             initial={{ opacity: 0, scale: 0.9 }}
                                             animate={{ opacity: 1, scale: 1 }}
-                                            className={`px-2 py-1 text-[12px] rounded-full w-full sm:w-auto text-white ${result.status === "primary" ? "bg-green-500" :
+                                            className={`px-2 py-1 text-[12px] rounded-md w-full sm:w-auto text-white ${result.status === "primary" ? "bg-green-500" :
                                                 result.status === "spam" ? "bg-red-500" :
                                                     result.status === "promotions" ? "bg-purple-500" :
                                                         result.status === "social" ? "bg-yellow-500" :
@@ -918,7 +1081,7 @@ function GmailSection({
                                                 key={`${result.status}-inbox`}
                                                 initial={{ opacity: 0, scale: 0.9 }}
                                                 animate={{ opacity: 1, scale: 1 }}
-                                                className={`px-2 py-1 text-[12px] rounded-full w-full sm:w-auto text-white bg-green-500`}
+                                                className={`px-2 py-1 text-[12px] rounded-md w-full sm:w-auto text-white bg-green-500`}
                                             >
                                                 Inbox
                                             </motion.span>
@@ -1108,15 +1271,15 @@ function EmailSection({
                                         key={result.status}
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className={`px-2 py-1 text-[12px] rounded-full w-full sm:w-auto text-white ${selectedTab === "All"
-                                                ? result.status === "Inbox"
-                                                    ? "bg-green-500"
-                                                    : result.status === "Spam"
-                                                        ? "bg-red-500"
-                                                        : "bg-blue-500"
-                                                : selectedTab === "Inbox"
-                                                    ? "bg-green-500"
-                                                    : "bg-red-500"
+                                        className={`px-2 py-1 text-[12px] rounded-md w-full sm:w-auto text-white ${selectedTab === "All"
+                                            ? result.status === "Inbox"
+                                                ? "bg-green-500"
+                                                : result.status === "Spam"
+                                                    ? "bg-red-500"
+                                                    : "bg-blue-500"
+                                            : selectedTab === "Inbox"
+                                                ? "bg-green-500"
+                                                : "bg-red-500"
                                             }`}
                                     >
                                         {result.status}
