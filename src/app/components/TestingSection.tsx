@@ -536,6 +536,28 @@ export default function TestingSection() {
                 <div className="flex justify-center space-x-4 mb-4 max-w-5xl mx-auto">
                     <button
                         onClick={() => {
+                            setSelectedTabYahooUser1("All");
+                            setSelectedTabYahooUser2("All");
+                            setSelectedTabZohoUser1("All");
+                            setSelectedTabZohoUser2("All");
+                            setSelectedTabZohoUser3("All");
+                            setSelectedTabYandexUser1("All");
+                            setSelectedTabYandexUser2("All");
+                            // Gmail (All for Inbox)
+                            setSelectedTabGmailUser1("All");
+                            setSelectedTabGmailUser2("All");
+                            setSelectedTabGmailUser3("All");
+                            setSelectedTabGmailUser4("All");
+                            setSelectedTabGmailUser5("All");
+                            setSelectedTabGmailUser6("All");
+                        }}
+                        className="relative px-6 py-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-full shadow-lg hover:from-blue-500 hover:to-blue-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-blue-300 focus:outline-none"
+                    >
+                        <span className="absolute inset-0 rounded-full bg-blue-100 opacity-10"></span>
+                        Show All Mails
+                    </button>
+                    <button
+                        onClick={() => {
                             setSelectedTabYahooUser1("Inbox");
                             setSelectedTabYahooUser2("Inbox");
                             setSelectedTabZohoUser1("Inbox");

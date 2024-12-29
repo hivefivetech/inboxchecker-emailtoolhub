@@ -5,14 +5,19 @@ import { motion, AnimatePresence } from "framer-motion";
 import TestingSection from "./TestingSection";
 
 const randomEmails = [
-    "wardenleon484@gmail.com",
-    "thomasadward5@gmail.com",
-    "stellajamsonusa@gmail.com",
-    "foodazmaofficial@gmail.com",
-    "watsonjetpeter@gmail.com",
     "dcruzjovita651@gmail.com",
+    "doctsashawn@gmail.com",
+    "foodazmaofficial@gmail.com",
+    "stellajamsonusa@gmail.com",
+    "thomasadward5@gmail.com",
+    "watsonjetpeter@gmail.com",
     "syedtestm@yahoo.com",
     "vexabyteofficial@yahoo.com",
+    "jamie_roberts@zohomail.in",
+    "rollyriders@zohomail.in",
+    "pollywilmar@zohomail.in",
+    "awesome.jamii@yandex.com",
+    "boudreauryan@yandex.com",
 ];
 
 export default function Features() {
