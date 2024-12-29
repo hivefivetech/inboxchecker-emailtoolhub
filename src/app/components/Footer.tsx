@@ -1,4 +1,25 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
+
 export default function Footer() {
+    const [activeUsers, setActiveUsers] = useState(0);
+
+    useEffect(() => {
+        const socket = io({
+            path: "/api/socketio",
+        });
+
+        socket.on("activeUsers", (count) => {
+            setActiveUsers(count);
+        });
+
+        return () => {
+            socket.disconnect();
+        };
+    }, []);
+
     return (
         <footer className="bg-gradient-to-r from-gray-900 to-gray-700 text-gray-200 py-10">
             <div className="max-w-6xl mx-auto px-6 space-y-6 text-center">
@@ -31,6 +52,9 @@ export default function Footer() {
                 <p className="text-sm">
                     &copy; 2024 InboxChecker. All rights reserved.
                 </p>
+                <div className="text-sm text-white">
+                    AU: <span className="font-bold text-blue-500">{activeUsers}</span>
+                </div>
             </div>
         </footer>
     );

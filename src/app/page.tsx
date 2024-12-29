@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { io } from "socket.io-client";
 import { motion } from "framer-motion";
 import { FaArrowUp } from "react-icons/fa";
 import Navbar from "./components/Navbar";
@@ -12,21 +11,6 @@ import Footer from "./components/Footer";
 
 export default function Home() {
   const [showScrollToTop, setShowScrollToTop] = useState(false);
-  const [activeUsers, setActiveUsers] = useState(0);
-
-  useEffect(() => {
-    const socket = io({
-      path: "/api/socketio",
-    });
-
-    socket.on("activeUsers", (count) => {
-      setActiveUsers(count);
-    });
-
-    return () => {
-      socket.disconnect();
-    };
-  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -46,9 +30,6 @@ export default function Home() {
       <Features />
       <CTASection />
       <Footer />
-      <div className="fixed bottom-4 left-4 bg-gray-800 text-white p-3 rounded-lg shadow-lg">
-        Active Users: {activeUsers}
-      </div>
       {showScrollToTop && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
