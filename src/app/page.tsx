@@ -1,29 +1,39 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { io } from "socket.io-client";
 import { motion } from "framer-motion";
 import { FaArrowUp } from "react-icons/fa";
-import CTASection from "./components/CTASection";
-import Features from "./components/Features";
-import Footer from "./components/Footer";
-import HeroSection from "./components/HeroSection";
 import Navbar from "./components/Navbar";
+import HeroSection from "./components/HeroSection";
+import Features from "./components/Features";
+import CTASection from "./components/CTASection";
+import Footer from "./components/Footer";
 
 export default function Home() {
-
   const [showScrollToTop, setShowScrollToTop] = useState(false);
+  const [activeUsers, setActiveUsers] = useState(0);
+
+  useEffect(() => {
+    const socket = io({
+      path: "/api/socketio",
+    });
+
+    socket.on("activeUsers", (count) => {
+      setActiveUsers(count);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 300) {
-        setShowScrollToTop(true);
-      } else {
-        setShowScrollToTop(false);
-      }
+      setShowScrollToTop(window.scrollY > 300);
     };
 
     window.addEventListener("scroll", handleScroll);
-
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
@@ -36,6 +46,9 @@ export default function Home() {
       <Features />
       <CTASection />
       <Footer />
+      <div className="fixed bottom-4 left-4 bg-gray-800 text-white p-3 rounded-lg shadow-lg">
+        Active Users: {activeUsers}
+      </div>
       {showScrollToTop && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
