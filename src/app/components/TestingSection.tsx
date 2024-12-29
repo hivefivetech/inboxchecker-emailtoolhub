@@ -224,34 +224,36 @@ export default function TestingSection() {
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
 
-    const [selectedTabYahooUser1, setSelectedTabYahooUser1] = useState("Inbox");
-    const [selectedTabYahooUser2, setSelectedTabYahooUser2] = useState("Inbox");
-    const [selectedTabZohoUser1, setSelectedTabZohoUser1] = useState("Inbox");
-    const [selectedTabZohoUser2, setSelectedTabZohoUser2] = useState("Inbox");
-    const [selectedTabZohoUser3, setSelectedTabZohoUser3] = useState("Inbox");
-    const [selectedTabYandexUser1, setSelectedTabYandexUser1] = useState("Inbox");
-    const [selectedTabYandexUser2, setSelectedTabYandexUser2] = useState("Inbox");
+    const [selectedTabYahooUser1, setSelectedTabYahooUser1] = useState("All");
+    const [selectedTabYahooUser2, setSelectedTabYahooUser2] = useState("All");
+    const [selectedTabZohoUser1, setSelectedTabZohoUser1] = useState("All");
+    const [selectedTabZohoUser2, setSelectedTabZohoUser2] = useState("All");
+    const [selectedTabZohoUser3, setSelectedTabZohoUser3] = useState("All");
+    const [selectedTabYandexUser1, setSelectedTabYandexUser1] = useState("All");
+    const [selectedTabYandexUser2, setSelectedTabYandexUser2] = useState("All");
     const [searchQuery, setSearchQuery] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isRealtimeLoader, setIsRealtimeLoader] = useState(true);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [selectedProvider, setSelectedProvider] = useState("all");
 
-    const [selectedTabGmailUser1, setSelectedTabGmailUser1] = useState("Primary");
-    const [selectedTabGmailUser2, setSelectedTabGmailUser2] = useState("Primary");
-    const [selectedTabGmailUser3, setSelectedTabGmailUser3] = useState("Primary");
-    const [selectedTabGmailUser4, setSelectedTabGmailUser4] = useState("Primary");
-    const [selectedTabGmailUser5, setSelectedTabGmailUser5] = useState("Primary");
-    const [selectedTabGmailUser6, setSelectedTabGmailUser6] = useState("Primary");
+    const [selectedTabGmailUser1, setSelectedTabGmailUser1] = useState("All");
+    const [selectedTabGmailUser2, setSelectedTabGmailUser2] = useState("All");
+    const [selectedTabGmailUser3, setSelectedTabGmailUser3] = useState("All");
+    const [selectedTabGmailUser4, setSelectedTabGmailUser4] = useState("All");
+    const [selectedTabGmailUser5, setSelectedTabGmailUser5] = useState("All");
+    const [selectedTabGmailUser6, setSelectedTabGmailUser6] = useState("All");
 
     const gmailTabs = [
+        { label: "All", value: "All" },
         { label: "Primary", value: "Primary" },
         { label: "Spam", value: "Spam" },
-        { label: "Promotions", value: "Promotions" },
-        { label: "Social", value: "Social" },
-        { label: "Updates", value: "Updates" },
+        // { label: "Promotions", value: "Promotions" },
+        // { label: "Social", value: "Social" },
+        // { label: "Updates", value: "Updates" },
     ];
     const tabs = [
+        { label: "All", value: "All" },
         { label: "Inbox", value: "Inbox" },
         { label: "Spam", value: "Spam" },
     ];
@@ -267,32 +269,32 @@ export default function TestingSection() {
 
             if (emails["dcruzjovita651-token.json"]) {
                 const tabs = emails["dcruzjovita651-token.json"];
-                const allEmails = Object.values(tabs).flat();
+                const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setResultsGmailUser1(allEmails);
             }
             if (emails["doctsashawn-token.json"]) {
                 const tabs = emails["doctsashawn-token.json"];
-                const allEmails = Object.values(tabs).flat();
+                const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setResultsGmailUser2(allEmails);
             }
             if (emails["foodazmaofficial-token.json"]) {
                 const tabs = emails["foodazmaofficial-token.json"];
-                const allEmails = Object.values(tabs).flat();
+                const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setResultsGmailUser3(allEmails);
             }
             if (emails["stellajamsonusa-token.json"]) {
                 const tabs = emails["stellajamsonusa-token.json"];
-                const allEmails = Object.values(tabs).flat();
+                const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setResultsGmailUser4(allEmails);
             }
             if (emails["thomasadward5-token.json"]) {
                 const tabs = emails["thomasadward5-token.json"];
-                const allEmails = Object.values(tabs).flat();
+                const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setResultsGmailUser5(allEmails);
             }
             if (emails["watsonjetpeter-token.json"]) {
                 const tabs = emails["watsonjetpeter-token.json"];
-                const allEmails = Object.values(tabs).flat();
+                const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
                 setResultsGmailUser6(allEmails);
             }
             setIsFirstReloadGmail(false);
@@ -313,24 +315,41 @@ export default function TestingSection() {
                 setIsLoading(true);
             }
             setIsRealtimeLoader(true);
+    
             const { yahoouser1, yahoouser2, zohouser1, zohouser2, zohouser3, yandexuser1, yandexuser2 } = await fetchEmailsFromServer();
-            setResultsYahooUser1(yahoouser1);
-            setResultsYahooUser2(yahoouser2);
-            setResultsZohoUser1(zohouser1);
-            setResultsZohoUser2(zohouser2);
-            setResultsZohoUser3(zohouser3);
-            setResultsYandexUser1(yandexuser1);
-            setResultsYandexUser2(yandexuser2);
+    
+            setResultsYahooUser1(
+                yahoouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsYahooUser2(
+                yahoouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsZohoUser1(
+                zohouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsZohoUser2(
+                zohouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsZohoUser3(
+                zohouser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsYandexUser1(
+                yandexuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsYandexUser2(
+                yandexuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+    
             setIsLoading(false);
             setIsFirstLoad(false);
             setIsRealtimeLoader(false);
         };
-
+    
         fetchEmails();
         const interval = setInterval(fetchEmails, 10000);
-
+    
         return () => clearInterval(interval);
-    }, []);
+    }, []);    
 
     // Filter emails based on the selected tab and search query
     const emailResults = {
@@ -357,15 +376,16 @@ export default function TestingSection() {
         ],
     };
     const filterEmails = (emailData: any) => {
-        return emailData.map(({ results, selectedTab }: { results: EmailResult[]; selectedTab: string }) =>
-            results.filter((email: any) => {
-                const matchesTab = email.status.toLowerCase() === selectedTab.toLowerCase(); // Match tab
+        return emailData.map(({ results, selectedTab }: { results: EmailResult[]; selectedTab: string }) => {
+            const allEmails = selectedTab.toLowerCase() === "all"; // Check if "All" tab is selected
+            return results.filter((email: any) => {
+                const matchesTab = allEmails || email.status.toLowerCase() === selectedTab.toLowerCase(); // Include all emails for "All"
                 const matchesSearch =
                     email.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                     email.email.toLowerCase().includes(searchQuery.toLowerCase());
                 return matchesTab && matchesSearch;
-            })
-        );
+            });
+        });
     };
 
     const filteredEmails = {
@@ -729,7 +749,7 @@ function GmailSection({
                     selectedTab === "Spam" ? "bg-red-50" :
                         selectedTab === "Promotions" ? "bg-purple-50" :
                             selectedTab === "Social" ? "bg-yellow-50" :
-                                selectedTab === "Updates" ? "bg-orange-50" : "bg-gray-50"}`}
+                                selectedTab === "Updates" ? "bg-orange-50" : "bg-blue-50"}`}
         >
             <div className="text-center mb-1">
                 <h2 className="text-[15px] sm:text-lg font-bold text-gray-800">
@@ -738,7 +758,7 @@ function GmailSection({
                         selectedTab === "Spam" ? "text-red-500" :
                             selectedTab === "Promotions" ? "text-purple-500" :
                                 selectedTab === "Social" ? "text-yellow-500" :
-                                    selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"}`}>
+                                    selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"}`}>
                         {accountEmail}
                     </span>
                 </h2>
@@ -747,7 +767,7 @@ function GmailSection({
                     selectedTab === "Spam" ? "text-red-500" :
                         selectedTab === "Promotions" ? "text-purple-500" :
                             selectedTab === "Social" ? "text-yellow-500" :
-                                selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"} text-[12px] sm:text-[14px] font-semibold`}>
+                                selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"} text-[12px] sm:text-[14px] font-semibold`}>
                     {ageOfEmail}
                 </p>
             </div>
@@ -760,7 +780,7 @@ function GmailSection({
                             selectedTab === "Spam" ? "text-red-500" :
                                 selectedTab === "Promotions" ? "text-purple-500" :
                                     selectedTab === "Social" ? "text-yellow-500" :
-                                        selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"} flex justify-center items-center`}
+                                        selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"} flex justify-center items-center`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -775,7 +795,7 @@ function GmailSection({
                             selectedTab === "Spam" ? "text-red-500" :
                                 selectedTab === "Promotions" ? "text-purple-500" :
                                     selectedTab === "Social" ? "text-yellow-500" :
-                                        selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"} flex justify-center items-center`}
+                                        selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"} flex justify-center items-center`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -793,11 +813,12 @@ function GmailSection({
                         key={tab.value}
                         onClick={() => setSelectedTab(tab.value)}
                         className={`flex-1 px-6 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${selectedTab === tab.value
-                            ? tab.value === "Primary" ? "bg-green-500 text-white shadow-md" :
-                                tab.value === "Spam" ? "bg-red-500 text-white shadow-md" :
-                                    tab.value === "Promotions" ? "bg-purple-500 text-white shadow-md" :
-                                        tab.value === "Social" ? "bg-yellow-500 text-white shadow-md" :
-                                            tab.value === "Updates" ? "bg-orange-500 text-white shadow-md" : ""
+                            ? tab.value === "All" ? "bg-blue-500 text-white shadow-md" :
+                                tab.value === "Primary" ? "bg-green-500 text-white shadow-md" :
+                                    tab.value === "Spam" ? "bg-red-500 text-white shadow-md" :
+                                        tab.value === "Promotions" ? "bg-purple-500 text-white shadow-md" :
+                                            tab.value === "Social" ? "bg-yellow-500 text-white shadow-md" :
+                                                tab.value === "Updates" ? "bg-orange-500 text-white shadow-md" : ""
                             : "bg-white text-gray-800 hover:bg-gray-200"}`}
                     >
                         {tab.label}
@@ -810,7 +831,7 @@ function GmailSection({
                     selectedTab === "Spam" ? "bg-red-100" :
                         selectedTab === "Promotions" ? "bg-purple-100" :
                             selectedTab === "Social" ? "bg-yellow-100" :
-                                selectedTab === "Updates" ? "bg-orange-100" : "bg-gray-100"}`}
+                                selectedTab === "Updates" ? "bg-orange-100" : "bg-blue-100"}`}
             >
                 {isFirstLoad || isLoading ? (
                     <motion.div
@@ -825,7 +846,7 @@ function GmailSection({
                                 selectedTab === "Spam" ? "text-red-500" :
                                     selectedTab === "Promotions" ? "text-purple-500" :
                                         selectedTab === "Social" ? "text-yellow-500" :
-                                            selectedTab === "Updates" ? "text-orange-500" : "text-gray-500"}`}
+                                            selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"}`}
                         />
                     </motion.div>
                 ) : filteredTabResults.length > 0 ? (
@@ -876,20 +897,33 @@ function GmailSection({
                                             </p>
                                         </div>
                                     </div>
-                                    {/* Status Badge */}
-                                    <motion.span
-                                        key={result.status}
-                                        initial={{ opacity: 0, scale: 0.9 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        className={`px-4 py-2 rounded-full w-full sm:w-auto text-white ${result.status === "primary" ? "bg-green-500" :
+                                    <div className="flex flex-col justify-center items-end gap-1">
+                                        {/* Status Badge */}
+                                        <motion.span
+                                            key={result.status}
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className={`px-2 py-1 text-[12px] rounded-full w-full sm:w-auto text-white ${result.status === "primary" ? "bg-green-500" :
                                                 result.status === "spam" ? "bg-red-500" :
                                                     result.status === "promotions" ? "bg-purple-500" :
                                                         result.status === "social" ? "bg-yellow-500" :
-                                                            result.status === "updates" ? "bg-orange-500" : "bg-gray-500"
-                                            }`}
-                                    >
-                                        {result.status}
-                                    </motion.span>
+                                                            result.status === "updates" ? "bg-orange-500" : "bg-blue-500"
+                                                }`}
+                                        >
+                                            {result.status === "primary" ? "Primary Inbox" : result.status.charAt(0).toUpperCase() + result.status.slice(1)}
+                                        </motion.span>
+                                        {/* Status Badge for Updates, Social, or Promotions */}
+                                        {(result.status === "updates" || result.status === "social" || result.status === "promotions") && (
+                                            <motion.span
+                                                key={`${result.status}-inbox`}
+                                                initial={{ opacity: 0, scale: 0.9 }}
+                                                animate={{ opacity: 1, scale: 1 }}
+                                                className={`px-2 py-1 text-[12px] rounded-full w-full sm:w-auto text-white bg-green-500`}
+                                            >
+                                                Inbox
+                                            </motion.span>
+                                        )}
+                                    </div>
                                 </motion.div>
                             ))}
                         </AnimatePresence>
@@ -930,17 +964,29 @@ function EmailSection({
     return (
         <div
             className={`w-full shadow-lg rounded-lg p-3 mb-2 
-                ${selectedTab === "Inbox" ? "bg-green-50" : "bg-red-50"}`}
+            ${selectedTab === "All"
+                    ? "bg-blue-50"
+                    : selectedTab === "Inbox"
+                        ? "bg-green-50"
+                        : "bg-red-50"}`}
         >
             <div className="text-center mb-1">
                 <h2 className="text-[15px] sm:text-lg font-bold text-gray-800">
                     Results for:{" "}
-                    <span className={`${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"}`}>
+                    <span className={`${selectedTab === "All"
+                        ? "text-blue-500"
+                        : selectedTab === "Inbox"
+                            ? "text-green-500"
+                            : "text-red-500"}`}>
                         {accountEmail}
                     </span>
                 </h2>
 
-                <p className={`${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"} text-[12px] sm:text-[14px] font-semibold`}>
+                <p className={`${selectedTab === "All"
+                    ? "text-blue-500"
+                    : selectedTab === "Inbox"
+                        ? "text-green-500"
+                        : "text-red-500"} text-[12px] sm:text-[14px] font-semibold`}>
                     {ageOfEmail}
                 </p>
             </div>
@@ -949,7 +995,11 @@ function EmailSection({
             <div className="flex justify-end items-end mb-2">
                 {isRealtimeLoader ? (
                     <motion.div
-                        className={`${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"} flex justify-center items-center`}
+                        className={`${selectedTab === "All"
+                            ? "text-blue-500"
+                            : selectedTab === "Inbox"
+                                ? "text-green-500"
+                                : "text-red-500"} flex justify-center items-center`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -960,7 +1010,11 @@ function EmailSection({
                     </motion.div>
                 ) : (
                     <motion.div
-                        className={`${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"} flex justify-center items-center`}
+                        className={`${selectedTab === "All"
+                            ? "text-blue-500"
+                            : selectedTab === "Inbox"
+                                ? "text-green-500"
+                                : "text-red-500"} flex justify-center items-center`}
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
@@ -978,11 +1032,12 @@ function EmailSection({
                         key={tab.value}
                         onClick={() => setSelectedTab(tab.value)}
                         className={`flex-1 px-6 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${selectedTab === tab.value
-                            ? tab.value === "Inbox"
-                                ? "bg-green-500 text-white shadow-md"
-                                : "bg-red-500 text-white shadow-md"
-                            : "bg-white text-gray-800 hover:bg-gray-200"
-                            }`}
+                            ? tab.value === "All"
+                                ? "bg-blue-500 text-white shadow-md"
+                                : tab.value === "Inbox"
+                                    ? "bg-green-500 text-white shadow-md"
+                                    : "bg-red-500 text-white shadow-md"
+                            : "bg-white text-gray-800 hover:bg-gray-200"}`}
                     >
                         {tab.label}
                     </button>
@@ -990,8 +1045,11 @@ function EmailSection({
             </div>
 
             <div
-                className={`space-y-4 p-3 rounded-lg shadow-md ${selectedTab === "Inbox" ? "bg-green-100" : "bg-red-100"
-                    }`}
+                className={`space-y-4 p-3 rounded-lg shadow-md ${selectedTab === "All"
+                    ? "bg-blue-100"
+                    : selectedTab === "Inbox"
+                        ? "bg-green-100"
+                        : "bg-red-100"}`}
             >
                 {isLoading ? (
                     <motion.div
@@ -1002,8 +1060,11 @@ function EmailSection({
                         transition={{ duration: 0.5 }}
                     >
                         <FaSpinner
-                            className={`animate-spin text-2xl ${selectedTab === "Inbox" ? "text-green-500" : "text-red-500"
-                                }`}
+                            className={`animate-spin text-2xl ${selectedTab === "All"
+                                ? "text-blue-500"
+                                : selectedTab === "Inbox"
+                                    ? "text-green-500"
+                                    : "text-red-500"}`}
                         />
                     </motion.div>
                 ) : filteredTabResults.length > 0 ? (
@@ -1047,7 +1108,15 @@ function EmailSection({
                                         key={result.status}
                                         initial={{ opacity: 0, scale: 0.9 }}
                                         animate={{ opacity: 1, scale: 1 }}
-                                        className={`px-4 py-2 rounded-full w-full sm:w-auto text-white ${result.status === "Inbox" ? "bg-green-500" : "bg-red-500"
+                                        className={`px-2 py-1 text-[12px] rounded-full w-full sm:w-auto text-white ${selectedTab === "All"
+                                                ? result.status === "Inbox"
+                                                    ? "bg-green-500"
+                                                    : result.status === "Spam"
+                                                        ? "bg-red-500"
+                                                        : "bg-blue-500"
+                                                : selectedTab === "Inbox"
+                                                    ? "bg-green-500"
+                                                    : "bg-red-500"
                                             }`}
                                     >
                                         {result.status}
