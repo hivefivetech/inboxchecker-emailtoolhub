@@ -699,10 +699,10 @@ export default function TestingSection() {
                                 tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[0]}
                                 image={GmailImage}
-                                isLoading={isLoadingGmail && isFirstReloadGmail}
                                 isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
-                                isFirstLoad={isFirstLoad}
+                                isFirstReloadGmail={isFirstReloadGmail}
+                                isLoadingGmail={isLoadingGmail}
                             />
                             <GmailSection
                                 accountEmail="doctsashawn@gmail.com"
@@ -712,10 +712,10 @@ export default function TestingSection() {
                                 tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[1]}
                                 image={GmailImage}
-                                isLoading={isLoadingGmail && isFirstReloadGmail}
                                 isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
-                                isFirstLoad={isFirstLoad}
+                                isFirstReloadGmail={isFirstReloadGmail}
+                                isLoadingGmail={isLoadingGmail}
                             />
                             <GmailSection
                                 accountEmail="foodazmaofficial@gmail.com"
@@ -725,10 +725,10 @@ export default function TestingSection() {
                                 tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[2]}
                                 image={GmailImage}
-                                isLoading={isLoadingGmail && isFirstReloadGmail}
                                 isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
-                                isFirstLoad={isFirstLoad}
+                                isFirstReloadGmail={isFirstReloadGmail}
+                                isLoadingGmail={isLoadingGmail}
                             />
                             <GmailSection
                                 accountEmail="stellajamsonusa@gmail.com"
@@ -738,10 +738,10 @@ export default function TestingSection() {
                                 tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[3]}
                                 image={GmailImage}
-                                isLoading={isLoadingGmail && isFirstReloadGmail}
                                 isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
-                                isFirstLoad={isFirstLoad}
+                                isFirstReloadGmail={isFirstReloadGmail}
+                                isLoadingGmail={isLoadingGmail}
                             />
                             <GmailSection
                                 accountEmail="thomasadward5@gmail.com"
@@ -751,10 +751,10 @@ export default function TestingSection() {
                                 tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[4]}
                                 image={GmailImage}
-                                isLoading={isLoadingGmail && isFirstReloadGmail}
                                 isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
-                                isFirstLoad={isFirstLoad}
+                                isFirstReloadGmail={isFirstReloadGmail}
+                                isLoadingGmail={isLoadingGmail}
                             />
                             <GmailSection
                                 accountEmail="watsonjetpeter@gmail.com"
@@ -764,10 +764,10 @@ export default function TestingSection() {
                                 tabs={gmailTabs}
                                 filteredTabResults={filteredEmails.gmail[5]}
                                 image={GmailImage}
-                                isLoading={isLoadingGmail && isFirstReloadGmail}
                                 isRealtimeLoader={isRealtimeLoadingGmail}
                                 setSearchQuery={setSearchQuery}
-                                isFirstLoad={isFirstLoad}
+                                isFirstReloadGmail={isFirstReloadGmail}
+                                isLoadingGmail={isLoadingGmail}
                             />
                         </>
                     ) : null}
@@ -801,7 +801,6 @@ export default function TestingSection() {
                             />
                         </>
                     ) : null}
-
 
                     {/* ZOHO */}
                     {selectedProvider === "all" || selectedProvider === "zoho" ? (
@@ -888,10 +887,10 @@ function GmailSection({
     tabs,
     filteredTabResults,
     image,
-    isLoading,
     isRealtimeLoader,
     setSearchQuery,
-    isFirstLoad,
+    isFirstReloadGmail,
+    isLoadingGmail,
 }: {
     accountEmail: string;
     ageOfEmail: string;
@@ -900,10 +899,10 @@ function GmailSection({
     tabs: { label: string; value: string }[];
     filteredTabResults: { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[];
     image: any;
-    isLoading: boolean;
     isRealtimeLoader: boolean;
     setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-    isFirstLoad: boolean;
+    isFirstReloadGmail: boolean;
+    isLoadingGmail: boolean;
 }) {
     return (
         <div
@@ -996,7 +995,7 @@ function GmailSection({
                             selectedTab === "Social" ? "bg-yellow-100" :
                                 selectedTab === "Updates" ? "bg-orange-100" : "bg-blue-100"}`}
             >
-                {isFirstLoad || isLoading ? (
+                {isFirstReloadGmail || isLoadingGmail ? (
                     <motion.div
                         className="flex justify-center items-center h-32"
                         initial={{ opacity: 0 }}
