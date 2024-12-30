@@ -4,7 +4,7 @@ import { fetchEmailsForBothAccounts } from "@/services/imapService";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "GET") {
         try {
-            const folders = ["INBOX", "Spam"];
+            const folders = ["Inbox", "Spam"];
             const emails = await fetchEmailsForBothAccounts(folders);
             res.status(200).json({ success: true, emails });
         } catch (error) {

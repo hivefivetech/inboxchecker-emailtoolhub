@@ -57,9 +57,18 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
                 const range = `${start}:${status.messages}`;
 
                 for await (const message of client.fetch(range, { envelope: true })) {
+                    const isGmail = user.includes("@gmail.com");
                     const isYahoo = user.includes("@yahoo.com");
                     const isZoho = user.includes("@zoho.com") || user.includes("@zohomail.in");
                     const isYandex = user.includes("@yandex.com") || user.includes("@yandex.ru");
+
+                    const folderName = folder.toLowerCase();
+
+                    const isSpam =
+                        (isYahoo && folderName.includes("bulk")) ||
+                        (isZoho && folderName.includes("spam")) ||
+                        (isYandex && folderName.includes("spam")) ||
+                        (isGmail && folderName.includes("[gmail]/spam"));
 
                     allEmails.push({
                         subject: message.envelope.subject || "No Subject",
@@ -68,12 +77,7 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
                             address: message.envelope.from?.[0]?.address || "Unknown Address",
                         },
                         date: new Date(message.envelope.date || new Date()),
-                        status:
-                            (isYahoo && folder.toLowerCase().includes("bulk")) ||
-                                (isZoho && folder.toLowerCase().includes("spam")) || 
-                                (isYandex && folder.toLowerCase().includes("spam"))
-                                ? "Spam"
-                                : "Inbox",
+                        status: isSpam ? "Spam" : "Inbox",
                     });
                 }
             } finally {
@@ -95,8 +99,50 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
  * @param folders - Array of folders to fetch emails from.
  * @returns Promise<object> - Emails grouped by account.
  */
-export async function fetchEmailsForBothAccounts(folders: string[] = ["INBOX", "Spam"]) {
+export async function fetchEmailsForBothAccounts(folders: string[] = ["Inbox", "[Gmail]/Spam"]) {
     const accounts = [
+        {
+            user: process.env.IMAP_USER_GMAIL_FIRST!,
+            pass: process.env.IMAP_PASSWORD_GMAIL_FIRST!,
+            folders: ["Inbox", "[Gmail]/Spam"],
+            label: "gmailuser1",
+        },
+        {
+            user: process.env.IMAP_USER_GMAIL_SECOND!,
+            pass: process.env.IMAP_PASSWORD_GMAIL_SECOND!,
+            folders: ["Inbox", "[Gmail]/Spam"],
+            label: "gmailuser2",
+        },
+        {
+            user: process.env.IMAP_USER_GMAIL_THIRD!,
+            pass: process.env.IMAP_PASSWORD_GMAIL_THIRD!,
+            folders: ["Inbox", "[Gmail]/Spam"],
+            label: "gmailuser3",
+        },
+        {
+            user: process.env.IMAP_USER_GMAIL_FOURTH!,
+            pass: process.env.IMAP_PASSWORD_GMAIL_FOURTH!,
+            folders: ["Inbox", "[Gmail]/Spam"],
+            label: "gmailuser4",
+        },
+        {
+            user: process.env.IMAP_USER_GMAIL_FIFTH!,
+            pass: process.env.IMAP_PASSWORD_GMAIL_FIFTH!,
+            folders: ["Inbox", "[Gmail]/Spam"],
+            label: "gmailuser5",
+        },
+        {
+            user: process.env.IMAP_USER_GMAIL_SIXTH!,
+            pass: process.env.IMAP_PASSWORD_GMAIL_SIXTH!,
+            folders: ["Inbox", "[Gmail]/Spam"],
+            label: "gmailuser6",
+        },
+        {
+            user: process.env.IMAP_USER_GMAIL_SEVENTH!,
+            pass: process.env.IMAP_PASSWORD_GMAIL_SEVENTH!,
+            folders: ["Inbox", "[Gmail]/Spam"],
+            label: "gmailuser7",
+        },
         {
             user: process.env.IMAP_USER_YAHOO_FIRST!,
             pass: process.env.IMAP_PASSWORD_YAHOO_FIRST!,
