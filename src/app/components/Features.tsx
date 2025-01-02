@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import TestingSection from "./TestingSection";
 
-const randomEmails = [
+const allEmails = [
     "pepapihsyd@gmail.com",
     "dcruzjovita651@gmail.com",
     "doctsashawn@gmail.com",
@@ -22,16 +22,7 @@ const randomEmails = [
 ];
 
 export default function Features() {
-    const [showPrompt, setShowPrompt] = useState(false);
-    const [numEmails, setNumEmails] = useState<number | null>(0);
-    const [generatedEmails, setGeneratedEmails] = useState<string[]>([]);
-
-    const handleGenerateEmails = () => {
-        const emails = randomEmails
-            .sort(() => 0.5 - Math.random())
-            .slice(0, numEmails || randomEmails.length);
-        setGeneratedEmails(emails);
-    };
+    const [emails, setEmails] = useState<string[]>(allEmails);
 
     const handleCopyEmail = (email: string) => {
         navigator.clipboard.writeText(email);
@@ -39,8 +30,8 @@ export default function Features() {
     };
 
     const handleCopyAll = () => {
-        const allEmails = generatedEmails.join(", ");
-        navigator.clipboard.writeText(allEmails);
+        const allEmailsString = emails.join(", ");
+        navigator.clipboard.writeText(allEmailsString);
         alert("All emails copied!");
     };
 
@@ -49,75 +40,22 @@ export default function Features() {
             <section className="relative bg-gradient-to-r from-gray-100 to-blue-100 text-gray-800 py-20 px-6">
                 <div className="max-w-5xl mx-auto text-center">
                     <h1 className="text-4xl sm:text-5xl font-bold mb-6">
-                        Start Testing Your Campaign’s Deliverability
+                        All Email Addresses
                     </h1>
                     <p className="text-lg sm:text-xl mb-8">
-                        Generate email addresses to help you send your campaign and analyze the results.
+                        Below are the email addresses available. You can copy individual emails or all emails at once.
                     </p>
-                    <button
-                        onClick={() => setShowPrompt(true)}
-                        className="px-6 py-3 bg-blue-600 text-white font-medium rounded-full hover:bg-blue-700 transition transform hover:scale-105"
-                    >
-                        Generate Emails
-                    </button>
-
-                    <AnimatePresence>
-                        {showPrompt && (
-                            <motion.div
-                                initial={{ opacity: 0, y: 50 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                exit={{ opacity: 0, y: 50 }}
-                                className="mt-8 bg-white text-gray-800 p-6 rounded-lg shadow-lg mx-auto w-full sm:w-3/4 lg:w-1/2"
-                            >
-                                <h2 className="text-xl font-bold mb-4">How many emails to generate?</h2>
-                                <input
-                                    type="number"
-                                    value={numEmails ?? ""}
-                                    onChange={(e) => {
-                                        const value = e.target.value;
-                                        setNumEmails(value === "" ? null : Number(value));
-                                    }}
-                                    className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-md focus:outline-none focus:ring focus:ring-blue-500"
-                                    placeholder="Enter a number"
-                                />
-                                <div className="flex flex-col sm:flex-row justify-center items-center gap-4">
-                                    <button
-                                        onClick={() => {
-                                            if (numEmails === null || numEmails <= 0) {
-                                                alert("Please enter a number to generate emails.");
-                                                return;
-                                            }
-                                            handleGenerateEmails();
-                                            setShowPrompt(false);
-                                        }}
-                                        className="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition hover:-translate-y-1"
-                                    >
-                                        Generate Emails
-                                    </button>
-                                    <button
-                                        onClick={() => {
-                                            setGeneratedEmails(randomEmails);
-                                            setShowPrompt(false);
-                                        }}
-                                        className="px-4 py-2 bg-blue-600 text-white font-medium rounded hover:bg-blue-700 transition hover:-translate-y-1"
-                                    >
-                                        Generate All
-                                    </button>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
 
                     <motion.div
                         className="mt-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
                         initial="hidden"
-                        animate={generatedEmails.length ? "visible" : "hidden"}
+                        animate="visible"
                         variants={{
                             hidden: { opacity: 0, y: 50 },
                             visible: { opacity: 1, y: 0, transition: { staggerChildren: 0.2 } },
                         }}
                     >
-                        {generatedEmails.map((email, index) => (
+                        {emails.map((email, index) => (
                             <motion.div
                                 key={index}
                                 className="bg-blue-600 text-white p-4 rounded shadow flex justify-between items-center"
@@ -129,7 +67,7 @@ export default function Features() {
                                 <span>{email}</span>
                                 <button
                                     onClick={() => handleCopyEmail(email)}
-                                    className="ml-2 bg-white text-blue-600 px-2 py-1 rounded-full text-sm hover:bg-gray-100 transition"
+                                    className="ml-2 bg-white text-blue-600 px-2 py-1 rounded-full text-sm hover:bg-gray-200 transition"
                                 >
                                     Copy
                                 </button>
@@ -137,16 +75,14 @@ export default function Features() {
                         ))}
                     </motion.div>
 
-                    {generatedEmails.length > 0 && (
-                        <div className="mt-6">
-                            <button
-                                onClick={handleCopyAll}
-                                className="px-6 py-3 bg-teal-500 text-white font-medium rounded-full hover:bg-teal-600 transition transform hover:scale-105"
-                            >
-                                Copy All Emails
-                            </button>
-                        </div>
-                    )}
+                    <div className="mt-6">
+                        <button
+                            onClick={handleCopyAll}
+                            className="px-6 py-3 bg-teal-500 text-white font-medium rounded-full hover:bg-teal-600 transition transform hover:scale-105"
+                        >
+                            Copy All Emails
+                        </button>
+                    </div>
                 </div>
             </section>
 
