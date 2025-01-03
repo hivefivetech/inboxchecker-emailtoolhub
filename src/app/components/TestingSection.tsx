@@ -30,54 +30,6 @@ interface Email {
     date: Date;
     snippet: string;
 }
-interface GmailResults {
-    [key: string]: {
-        [tab: string]: Email[];
-    };
-}
-
-// Gmail
-const fetchGmailEmailsFromServer = async (): Promise<GmailResults> => {
-    try {
-        const response = await fetch("/api/gmails");
-        if (!response.ok) {
-            throw new Error(`Error: ${response.statusText}`);
-        }
-        const data = await response.json();
-
-        if (data.success && data.gmailResults) {
-            return Object.entries(data.gmailResults).reduce<GmailResults>(
-                (acc, [emailAccount, tabs]) => {
-                    acc[emailAccount] = {};
-                    Object.entries(tabs as Record<string, unknown[]>).forEach(
-                        ([tab, emails]) => {
-                            acc[emailAccount][tab] = (emails as any[]).map((email) => ({
-                                id: email.id,
-                                name: email.from?.name || "Unknown Sender",
-                                email: email.from?.address || "Unknown Email",
-                                maskedEmail: email.from?.address
-                                    ? email.from.address.replace(/@(.*)\./, "@*****.")
-                                    : "Unknown Email",
-                                subject: email.subject || "No Subject",
-                                status: tab,
-                                date: new Date(email.date),
-                                snippet: email.snippet || "No Snippet",
-                            }));
-                        }
-                    );
-                    return acc;
-                },
-                {}
-            );
-        } else {
-            console.warn("No Gmail data found.");
-            return {};
-        }
-    } catch (error) {
-        console.error("Error fetching Gmail emails:", error);
-        return {};
-    }
-};
 
 // IMAP
 const fetchEmailsFromServer = async () => {
@@ -112,18 +64,23 @@ const fetchEmailsFromServer = async () => {
     }
 };
 
-const formatEmail = (email: any) => ({
-    name: email.from?.name || "Unknown Sender",
-    email: email.from?.address || "Unknown Email",
-    subject: email.subject || "No Subject",
-    status: email.status || "Inbox",
-    date: new Date(email.date),
-});
+const formatEmail = (email: any) => {
+    const originalEmail = email.from?.address || "Unknown Email";
+
+    // Extract everything before @ and after the last dot, mask the domain part
+    const maskedEmail = originalEmail.replace(/@([^\.]+)\./, '@***.');
+
+    return {
+        name: email.from?.name || "Unknown Sender",
+        email: originalEmail,
+        maskedEmail: maskedEmail,
+        subject: email.subject || "No Subject",
+        status: email.status || "Inbox",
+        date: new Date(email.date),
+    };
+};
 
 export default function TestingSection() {
-    // const [isLoadingGmail, setIsLoadingGmail] = useState(true);
-    // const [isRealtimeLoadingGmail, setIsRealtimeLoadingGmail] = useState(true);
-    // const [isFirstReloadGmail, setIsFirstReloadGmail] = useState(true);
     const [resultsGmailUser1, setResultsGmailUser1] = useState<
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
@@ -192,74 +149,11 @@ export default function TestingSection() {
     const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [selectedProvider, setSelectedProvider] = useState("all");
 
-    // const gmailTabs = [
-    //     { label: "All", value: "All" },
-    //     { label: "Primary", value: "Primary" },
-    //     { label: "Spam", value: "Spam" },
-    //     // { label: "Promotions", value: "Promotions" },
-    //     // { label: "Social", value: "Social" },
-    //     // { label: "Updates", value: "Updates" },
-    // ];
     const tabs = [
         { label: "All", value: "All" },
         { label: "Inbox", value: "Inbox" },
         { label: "Spam", value: "Spam" },
     ];
-
-    // GMAIL
-    // useEffect(() => {
-    //     const fetchGmailEmails = async () => {
-    //         if (isFirstReloadGmail) {
-    //             setIsLoadingGmail(true);
-    //         }
-    //         setIsRealtimeLoadingGmail(true);
-    //         const emails = await fetchGmailEmailsFromServer();
-
-    //         if (emails["dcruzjovita651-token.json"]) {
-    //             const tabs = emails["dcruzjovita651-token.json"];
-    //             const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    //             setResultsGmailUser1(allEmails);
-    //         }
-    //         if (emails["doctsashawn-token.json"]) {
-    //             const tabs = emails["doctsashawn-token.json"];
-    //             const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    //             setResultsGmailUser2(allEmails);
-    //         }
-    //         if (emails["foodazmaofficial-token.json"]) {
-    //             const tabs = emails["foodazmaofficial-token.json"];
-    //             const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    //             setResultsGmailUser3(allEmails);
-    //         }
-    //         if (emails["stellajamsonusa-token.json"]) {
-    //             const tabs = emails["stellajamsonusa-token.json"];
-    //             const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    //             setResultsGmailUser4(allEmails);
-    //         }
-    //         if (emails["thomasadward5-token.json"]) {
-    //             const tabs = emails["thomasadward5-token.json"];
-    //             const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    //             setResultsGmailUser5(allEmails);
-    //         }
-    //         if (emails["watsonjetpeter-token.json"]) {
-    //             const tabs = emails["watsonjetpeter-token.json"];
-    //             const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    //             setResultsGmailUser6(allEmails);
-    //         }
-    //         if (emails["wardenleon484-token.json"]) {
-    //             const tabs = emails["wardenleon484-token.json"];
-    //             const allEmails = Object.values(tabs).flat().sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    //             setResultsGmailUser7(allEmails);
-    //         }
-    //         setIsFirstReloadGmail(false);
-    //         setIsLoadingGmail(false);
-    //         setIsRealtimeLoadingGmail(false);
-    //     };
-
-    //     fetchGmailEmails();
-    //     const interval = setInterval(fetchGmailEmails, 2000);
-
-    //     return () => clearInterval(interval);
-    // }, []);
 
     // IMAP
     useEffect(() => {
@@ -373,32 +267,6 @@ export default function TestingSection() {
     // Filter Emails End
 
     // Percentage
-    // Gmail
-    // const calculatePercentage = (emails: EmailResult[], query: string) => {
-    //     const filteredEmails = emails.filter(
-    //         (email) =>
-    //             email.name.toLowerCase().includes(query.toLowerCase()) ||
-    //             email.email.toLowerCase().includes(query.toLowerCase())
-    //     );
-
-    //     const totalEmails = filteredEmails.length;
-
-    //     if (totalEmails === 0) {
-    //         return { inbox: 0, spam: 0 };
-    //     }
-
-    //     const inboxCount = filteredEmails.filter(
-    //         (email) =>
-    //             ["primary", "updates", "social", "promotions"].includes(email.status.toLowerCase())
-    //     ).length;
-    //     const spamCount = filteredEmails.filter((email) => email.status.toLowerCase() === "spam").length;
-
-    //     return {
-    //         inbox: Math.round((inboxCount / totalEmails) * 100),
-    //         spam: Math.round((spamCount / totalEmails) * 100),
-    //     };
-    // };
-    // Rest All
     const calculateSimplePercentage = (emails: EmailResult[], query: string) => {
         const filteredEmails = emails.filter(
             (email) =>
@@ -429,19 +297,6 @@ export default function TestingSection() {
     const yahooPercentages = calculateSimplePercentage(yahooAllEmails, searchQuery);
     const zohoPercentages = calculateSimplePercentage(zohoAllEmails, searchQuery);
     const yandexPercentages = calculateSimplePercentage(yandexAllEmails, searchQuery);
-
-    // const gmailAllEmails = [
-    //     ...resultsGmailUser1,
-    //     ...resultsGmailUser2,
-    //     ...resultsGmailUser3,
-    //     ...resultsGmailUser4,
-    //     ...resultsGmailUser5,
-    //     ...resultsGmailUser6,
-    //     ...resultsGmailUser7,
-    // ];
-
-    // const gmailPercentages = calculatePercentage(gmailAllEmails, searchQuery);
-    // Percentage End
 
     return (
         <section className="relative bg-gray-50 py-20 px-6">
@@ -482,28 +337,6 @@ export default function TestingSection() {
                         <div className="w-full max-w-4xl p-4 bg-white rounded-lg shadow">
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">Search Results Percentage</h3>
                             {/* Gmail */}
-                            {/* <div className="mb-4">
-                                <h4 className="text-sm font-bold text-gray-800">Gmail</h4>
-                                <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
-                                    <div
-                                        className="absolute h-full bg-green-500"
-                                        style={{ width: `${gmailPercentages.inbox}%` }}
-                                    ></div>
-                                    <div
-                                        className="absolute h-full bg-red-500"
-                                        style={{
-                                            width: `${gmailPercentages.spam}%`,
-                                            left: `${gmailPercentages.inbox}%`,
-                                        }}
-                                    ></div>
-                                </div>
-                                <p className="mt-1 text-xs text-gray-600">
-                                    Inbox: <span className="font-bold text-green-500">{gmailPercentages.inbox}%</span>,
-                                    Spam: <span className="font-bold text-red-500">{gmailPercentages.spam}%</span>
-                                </p>
-                            </div> */}
-
-                            {/* Yahoo */}
                             <div className="mb-4">
                                 <h4 className="text-sm font-bold text-gray-800">Gmail</h4>
                                 <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
@@ -714,103 +547,6 @@ export default function TestingSection() {
                 </div>
 
                 <div className="flex flex-col justify-center items-start md:grid grid-cols-2 w-full gap-5">
-                    {/* Gmail */}
-                    {/* {selectedProvider === "all" || selectedProvider === "gmail" ? (
-                        <>
-                            <GmailSection
-                                accountEmail="dcruzjovita651@gmail.com"
-                                ageOfEmail="3 Years Old"
-                                selectedTab={selectedTabGmailUser1}
-                                setSelectedTab={setSelectedTabGmailUser1}
-                                tabs={gmailTabs}
-                                filteredTabResults={filteredEmails.gmail[0]}
-                                image={GmailImage}
-                                isRealtimeLoader={isRealtimeLoadingGmail}
-                                setSearchQuery={setSearchQuery}
-                                isFirstReloadGmail={isFirstReloadGmail}
-                                isLoadingGmail={isLoadingGmail && isFirstReloadGmail}
-                            />
-                            <GmailSection
-                                accountEmail="doctsashawn@gmail.com"
-                                ageOfEmail="5 Years Old"
-                                selectedTab={selectedTabGmailUser2}
-                                setSelectedTab={setSelectedTabGmailUser2}
-                                tabs={gmailTabs}
-                                filteredTabResults={filteredEmails.gmail[1]}
-                                image={GmailImage}
-                                isRealtimeLoader={isRealtimeLoadingGmail}
-                                setSearchQuery={setSearchQuery}
-                                isFirstReloadGmail={isFirstReloadGmail}
-                                isLoadingGmail={isLoadingGmail && isFirstReloadGmail}
-                            />
-                            <GmailSection
-                                accountEmail="foodazmaofficial@gmail.com"
-                                ageOfEmail="8 Years Old"
-                                selectedTab={selectedTabGmailUser3}
-                                setSelectedTab={setSelectedTabGmailUser3}
-                                tabs={gmailTabs}
-                                filteredTabResults={filteredEmails.gmail[2]}
-                                image={GmailImage}
-                                isRealtimeLoader={isRealtimeLoadingGmail}
-                                setSearchQuery={setSearchQuery}
-                                isFirstReloadGmail={isFirstReloadGmail}
-                                isLoadingGmail={isLoadingGmail && isFirstReloadGmail}
-                            />
-                            <GmailSection
-                                accountEmail="stellajamsonusa@gmail.com"
-                                ageOfEmail="6 Years Old"
-                                selectedTab={selectedTabGmailUser4}
-                                setSelectedTab={setSelectedTabGmailUser4}
-                                tabs={gmailTabs}
-                                filteredTabResults={filteredEmails.gmail[3]}
-                                image={GmailImage}
-                                isRealtimeLoader={isRealtimeLoadingGmail}
-                                setSearchQuery={setSearchQuery}
-                                isFirstReloadGmail={isFirstReloadGmail}
-                                isLoadingGmail={isLoadingGmail && isFirstReloadGmail}
-                            />
-                            <GmailSection
-                                accountEmail="thomasadward5@gmail.com"
-                                ageOfEmail="2 Years Old"
-                                selectedTab={selectedTabGmailUser5}
-                                setSelectedTab={setSelectedTabGmailUser5}
-                                tabs={gmailTabs}
-                                filteredTabResults={filteredEmails.gmail[4]}
-                                image={GmailImage}
-                                isRealtimeLoader={isRealtimeLoadingGmail}
-                                setSearchQuery={setSearchQuery}
-                                isFirstReloadGmail={isFirstReloadGmail}
-                                isLoadingGmail={isLoadingGmail && isFirstReloadGmail}
-                            />
-                            <GmailSection
-                                accountEmail="watsonjetpeter@gmail.com"
-                                ageOfEmail="5 Years Old"
-                                selectedTab={selectedTabGmailUser6}
-                                setSelectedTab={setSelectedTabGmailUser6}
-                                tabs={gmailTabs}
-                                filteredTabResults={filteredEmails.gmail[5]}
-                                image={GmailImage}
-                                isRealtimeLoader={isRealtimeLoadingGmail}
-                                setSearchQuery={setSearchQuery}
-                                isFirstReloadGmail={isFirstReloadGmail}
-                                isLoadingGmail={isLoadingGmail && isFirstReloadGmail}
-                            />
-                            <GmailSection
-                                accountEmail="wardenleon484@gmail.com"
-                                ageOfEmail="8 Years Old"
-                                selectedTab={selectedTabGmailUser7}
-                                setSelectedTab={setSelectedTabGmailUser7}
-                                tabs={gmailTabs}
-                                filteredTabResults={filteredEmails.gmail[6]}
-                                image={GmailImage}
-                                isRealtimeLoader={isRealtimeLoadingGmail}
-                                setSearchQuery={setSearchQuery}
-                                isFirstReloadGmail={isFirstReloadGmail}
-                                isLoadingGmail={isLoadingGmail && isFirstReloadGmail}
-                            />
-                        </>
-                    ) : null} */}
-
                     {/* GMAIL */}
                     {selectedProvider === "all" || selectedProvider === "gmail" ? (
                         <>
@@ -1007,227 +743,6 @@ export default function TestingSection() {
         </section>
     );
 }
-
-// function GmailSection({
-//     accountEmail,
-//     ageOfEmail,
-//     selectedTab,
-//     setSelectedTab,
-//     tabs,
-//     filteredTabResults,
-//     image,
-//     isRealtimeLoader,
-//     setSearchQuery,
-//     isFirstReloadGmail,
-//     isLoadingGmail,
-// }: {
-//     accountEmail: string;
-//     ageOfEmail: string;
-//     selectedTab: string;
-//     setSelectedTab: React.Dispatch<React.SetStateAction<string>>;
-//     tabs: { label: string; value: string }[];
-//     filteredTabResults: { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[];
-//     image: any;
-//     isRealtimeLoader: boolean;
-//     setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
-//     isFirstReloadGmail: boolean;
-//     isLoadingGmail: boolean;
-// }) {
-//     return (
-//         <div
-//             className={`w-full shadow-lg rounded-lg p-3 mb-2 
-//         ${selectedTab === "Primary" ? "bg-green-50" :
-//                     selectedTab === "Spam" ? "bg-red-50" :
-//                         selectedTab === "Promotions" ? "bg-purple-50" :
-//                             selectedTab === "Social" ? "bg-yellow-50" :
-//                                 selectedTab === "Updates" ? "bg-orange-50" : "bg-blue-50"}`}
-//         >
-//             <div className="text-center mb-1">
-//                 <h2 className="text-[15px] sm:text-lg font-bold text-gray-800">
-//                     Gmail Results for:{" "}
-//                     <span className={`${selectedTab === "Primary" ? "text-green-500" :
-//                         selectedTab === "Spam" ? "text-red-500" :
-//                             selectedTab === "Promotions" ? "text-purple-500" :
-//                                 selectedTab === "Social" ? "text-yellow-500" :
-//                                     selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"}`}>
-//                         {accountEmail}
-//                     </span>
-//                 </h2>
-
-//                 <p className={`${selectedTab === "Primary" ? "text-green-500" :
-//                     selectedTab === "Spam" ? "text-red-500" :
-//                         selectedTab === "Promotions" ? "text-purple-500" :
-//                             selectedTab === "Social" ? "text-yellow-500" :
-//                                 selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"} text-[12px] sm:text-[14px] font-semibold`}>
-//                     {ageOfEmail}
-//                 </p>
-//             </div>
-
-//             {/* Realtime Loader */}
-//             <div className="flex justify-end items-end mb-2">
-//                 {isRealtimeLoader ? (
-//                     <motion.div
-//                         className={`${selectedTab === "Primary" ? "text-green-500" :
-//                             selectedTab === "Spam" ? "text-red-500" :
-//                                 selectedTab === "Promotions" ? "text-purple-500" :
-//                                     selectedTab === "Social" ? "text-yellow-500" :
-//                                         selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"} flex justify-center items-center`}
-//                         initial={{ opacity: 0 }}
-//                         animate={{ opacity: 1 }}
-//                         exit={{ opacity: 0 }}
-//                         transition={{ duration: 0.5 }}
-//                         title="Realtime Fetching"
-//                     >
-//                         <TbLoader3 className="animate-spin text-xl" />
-//                     </motion.div>
-//                 ) : (
-//                     <motion.div
-//                         className={`${selectedTab === "Primary" ? "text-green-500" :
-//                             selectedTab === "Spam" ? "text-red-500" :
-//                                 selectedTab === "Promotions" ? "text-purple-500" :
-//                                     selectedTab === "Social" ? "text-yellow-500" :
-//                                         selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"} flex justify-center items-center`}
-//                         initial={{ opacity: 0 }}
-//                         animate={{ opacity: 1 }}
-//                         exit={{ opacity: 0 }}
-//                         transition={{ duration: 0.5 }}
-//                         title="Fetched"
-//                     >
-//                         <FaCheck className="text-xl" />
-//                     </motion.div>
-//                 )}
-//             </div>
-
-//             <div className="flex justify-between rounded-lg shadow-inner mb-6 flex-wrap">
-//                 {tabs.map((tab) => (
-//                     <button
-//                         key={tab.value}
-//                         onClick={() => setSelectedTab(tab.value)}
-//                         className={`flex-1 px-6 py-2 text-sm font-medium rounded-lg transition-all duration-300 ${selectedTab === tab.value
-//                             ? tab.value === "All" ? "bg-blue-500 text-white shadow-md" :
-//                                 tab.value === "Primary" ? "bg-green-500 text-white shadow-md" :
-//                                     tab.value === "Spam" ? "bg-red-500 text-white shadow-md" :
-//                                         tab.value === "Promotions" ? "bg-purple-500 text-white shadow-md" :
-//                                             tab.value === "Social" ? "bg-yellow-500 text-white shadow-md" :
-//                                                 tab.value === "Updates" ? "bg-orange-500 text-white shadow-md" : ""
-//                             : "bg-white text-gray-800 hover:bg-gray-200"}`}
-//                     >
-//                         {tab.label === "Primary" ? "Inbox" : tab.label}
-//                     </button>
-//                 ))}
-//             </div>
-
-//             <div
-//                 className={`space-y-4 p-3 rounded-lg shadow-md ${selectedTab === "Primary" ? "bg-green-100" :
-//                     selectedTab === "Spam" ? "bg-red-100" :
-//                         selectedTab === "Promotions" ? "bg-purple-100" :
-//                             selectedTab === "Social" ? "bg-yellow-100" :
-//                                 selectedTab === "Updates" ? "bg-orange-100" : "bg-blue-100"}`}
-//             >
-//                 {isLoadingGmail ? (
-//                     <motion.div
-//                         className="flex justify-center items-center h-32"
-//                         initial={{ opacity: 0 }}
-//                         animate={{ opacity: 1 }}
-//                         exit={{ opacity: 0 }}
-//                         transition={{ duration: 0.5 }}
-//                     >
-//                         <FaSpinner
-//                             className={`animate-spin text-2xl ${selectedTab === "Primary" ? "text-green-500" :
-//                                 selectedTab === "Spam" ? "text-red-500" :
-//                                     selectedTab === "Promotions" ? "text-purple-500" :
-//                                         selectedTab === "Social" ? "text-yellow-500" :
-//                                             selectedTab === "Updates" ? "text-orange-500" : "text-blue-500"}`}
-//                         />
-//                     </motion.div>
-//                 ) : filteredTabResults.length > 0 ? (
-//                     <div className="max-h-64 overflow-y-auto">
-//                         <AnimatePresence>
-//                             {filteredTabResults.map((result, index) => (
-//                                 <motion.div
-//                                     key={index}
-//                                     onClick={() => {
-//                                         const spoofName = result.name?.split('<')[0]?.trim() || "Unknown Sender";
-//                                         setSearchQuery(spoofName);
-//                                     }}
-//                                     initial={{ opacity: 0, scale: 0.95 }}
-//                                     animate={{ opacity: 1, scale: 1 }}
-//                                     exit={{ opacity: 0, scale: 0.95 }}
-//                                     transition={{ duration: 0.3 }}
-//                                     className="flex flex-col sm:flex-row items-center justify-between bg-white duration-300 hover:bg-gray-200 cursor-pointer p-4 rounded-lg shadow gap-3 sm:gap-0 w-full mb-2"
-//                                 >
-//                                     <div className="flex flex-col sm:flex-row items-center gap-4">
-//                                         <div className="relative w-10 h-10">
-//                                             <Image
-//                                                 src={image}
-//                                                 alt="Gmail logo"
-//                                                 fill={true}
-//                                                 layout="fill"
-//                                                 objectFit="contain"
-//                                                 className="rounded-md"
-//                                             />
-//                                         </div>
-//                                         <div className="flex flex-col justify-center sm:justify-start items-center sm:items-start">
-//                                             <p className="text-[13px] text-center sm:text-start font-medium text-gray-800">
-//                                                 {(() => {
-//                                                     const match = result.name?.match(/^(.*?)<(.*)>$/);
-//                                                     const spoofName = match?.[1]?.trim() || "Unknown Sender";
-//                                                     const email = match?.[2] || result.email || "Unknown Email";
-
-//                                                     // Mask the part between @ and the last dot
-//                                                     const maskedEmail = email.replace(/@(.*?)(\..*)$/, (_, domain, tld) => `@***${tld}`);
-
-//                                                     return `${spoofName}, ${maskedEmail}`;
-//                                                 })()}
-//                                             </p>
-//                                             <p className="text-[12px] text-center sm:text-start text-gray-500">
-//                                                 {result.subject || "No Subject"}
-//                                             </p>
-//                                             <p className="text-[12px] text-center sm:text-start text-gray-500">
-//                                                 {new Date(result.date).toLocaleString()}
-//                                             </p>
-//                                         </div>
-//                                     </div>
-//                                     <div className="flex flex-row-reverse justify-end items-center gap-1">
-//                                         {/* Status Badge */}
-//                                         <motion.span
-//                                             key={result.status}
-//                                             initial={{ opacity: 0, scale: 0.9 }}
-//                                             animate={{ opacity: 1, scale: 1 }}
-//                                             className={`px-2 py-1 text-[12px] rounded-md w-full sm:w-auto text-white ${result.status === "primary" ? "bg-green-500" :
-//                                                 result.status === "spam" ? "bg-red-500" :
-//                                                     result.status === "promotions" ? "bg-purple-500" :
-//                                                         result.status === "social" ? "bg-yellow-500" :
-//                                                             result.status === "updates" ? "bg-orange-500" : "bg-blue-500"
-//                                                 }`}
-//                                         >
-//                                             {result.status === "primary" ? "Primary Inbox" : result.status.charAt(0).toUpperCase() + result.status.slice(1)}
-//                                         </motion.span>
-//                                         {/* Status Badge for Updates, Social, or Promotions */}
-//                                         {(result.status === "updates" || result.status === "social" || result.status === "promotions") && (
-//                                             <motion.span
-//                                                 key={`${result.status}-inbox`}
-//                                                 initial={{ opacity: 0, scale: 0.9 }}
-//                                                 animate={{ opacity: 1, scale: 1 }}
-//                                                 className={`px-2 py-1 text-[12px] rounded-md w-full sm:w-auto text-white bg-green-500`}
-//                                             >
-//                                                 Inbox
-//                                             </motion.span>
-//                                         )}
-//                                     </div>
-//                                 </motion.div>
-//                             ))}
-//                         </AnimatePresence>
-//                     </div>
-//                 ) : (
-//                     <p className="text-gray-600 text-center">
-//                         No emails found in the last 5 minutes.
-//                     </p>
-//                 )}
-//             </div>
-//         </div>
-//     );
-// }
 
 function EmailSection({
     accountEmail,
