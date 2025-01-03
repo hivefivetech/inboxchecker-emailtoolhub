@@ -42,48 +42,40 @@ async function fetchEmailsForAccount(user: string, pass: string, folders: string
         await client.connect();
 
         const allEmails: Email[] = [];
-        for (const folder of folders) {
-            const lock = await client.getMailboxLock(folder);
-            try {
-                console.log(`Fetching emails from folder: ${folder} for user: ${user}`);
 
-                const status = await client.status(folder, { messages: true });
-                if (status.messages === 0) {
-                    console.log(`No emails found in folder: ${folder}`);
-                    continue;
+        await Promise.all(
+            folders.map(async (folder) => {
+                try {
+                    const lock = await client.getMailboxLock(folder);
+
+                    const status = await client.status(folder, { messages: true });
+                    if (status.messages === 0) return;
+
+                    const start = Math.max(1, (status.messages ?? 0) - 3);
+                    const range = `${start}:${status.messages}`;
+
+                    for await (const message of client.fetch(range, { envelope: true })) {
+                        const isGmail = user.includes("@gmail.com");
+
+                        const isSpam = isGmail && folder.toLowerCase().includes("[gmail]/spam");
+
+                        allEmails.push({
+                            subject: message.envelope.subject || "No Subject",
+                            from: {
+                                name: message.envelope.from?.[0]?.name || "Unknown Sender",
+                                address: message.envelope.from?.[0]?.address || "Unknown Address",
+                            },
+                            date: new Date(message.envelope.date || new Date()),
+                            status: isSpam ? "Spam" : "Inbox",
+                        });
+                    }
+
+                    lock.release();
+                } catch (err) {
+                    console.error(`Error fetching ${folder} for ${user}:`, err);
                 }
-
-                const start = Math.max(1, (status.messages ?? 0) - 5); // Fetch the last 5 emails
-                const range = `${start}:${status.messages}`;
-
-                for await (const message of client.fetch(range, { envelope: true })) {
-                    const isGmail = user.includes("@gmail.com");
-                    const isYahoo = user.includes("@yahoo.com");
-                    const isZoho = user.includes("@zoho.com") || user.includes("@zohomail.in");
-                    const isYandex = user.includes("@yandex.com") || user.includes("@yandex.ru");
-
-                    const folderName = folder.toLowerCase();
-
-                    const isSpam =
-                        (isYahoo && folderName.includes("bulk")) ||
-                        (isZoho && folderName.includes("spam")) ||
-                        (isYandex && folderName.includes("spam")) ||
-                        (isGmail && folderName.includes("[gmail]/spam"));
-
-                    allEmails.push({
-                        subject: message.envelope.subject || "No Subject",
-                        from: {
-                            name: message.envelope.from?.[0]?.name || "Unknown Sender",
-                            address: message.envelope.from?.[0]?.address || "Unknown Address",
-                        },
-                        date: new Date(message.envelope.date || new Date()),
-                        status: isSpam ? "Spam" : "Inbox",
-                    });
-                }
-            } finally {
-                lock.release();
-            }
-        }
+            })
+        );
 
         return allEmails.sort((a, b) => b.date.getTime() - a.date.getTime());
     } catch (error) {
@@ -187,17 +179,22 @@ export async function fetchEmailsForBothAccounts(folders: string[] = ["Inbox", "
         },
     ];
 
-    const results = await Promise.all(
+    const results = await Promise.allSettled(
         accounts.map(async (account) => {
             try {
-                const emails = await fetchEmailsForAccount(account.user, account.pass, account.folders);
-                return { [account.label]: emails };
+                return { [account.label]: await fetchEmailsForAccount(account.user, account.pass, account.folders) };
             } catch (error) {
                 console.error(`Error fetching emails for ${account.label}:`, error);
                 return { [account.label]: [] };
             }
         })
     );
-
-    return results.reduce((acc, result) => ({ ...acc, ...result }), {});
+    
+    // Flatten results and filter out rejected promises
+    return results.reduce((acc, result) => {
+        if (result.status === "fulfilled") {
+            return { ...acc, ...result.value };
+        }
+        return acc;
+    }, {});    
 }

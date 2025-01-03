@@ -4,9 +4,16 @@ import { fetchEmailsForBothAccounts } from "@/services/imapService";
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "GET") {
         try {
-            const folders = ["Inbox", "Spam"];
-            const emails = await fetchEmailsForBothAccounts(folders);
-            res.status(200).json({ success: true, emails });
+            const folders = ["INBOX", "[Gmail]/Spam"];
+            res.writeHead(200, { "Content-Type": "application/json" });
+
+            fetchEmailsForBothAccounts(folders).then((emails) => {
+                res.end(JSON.stringify({ success: true, emails }));
+            }).catch((error) => {
+                console.error("Error in API handler:", error);
+                res.end(JSON.stringify({ success: false, message: "Failed to fetch emails." }));
+            });
+            return;
         } catch (error) {
             console.error("Error in API handler:", error);
             res.status(500).json({ success: false, message: "Failed to fetch emails." });

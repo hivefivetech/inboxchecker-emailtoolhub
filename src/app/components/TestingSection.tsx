@@ -158,60 +158,34 @@ export default function TestingSection() {
     // IMAP
     useEffect(() => {
         const fetchEmails = async () => {
-            if (isFirstLoad) {
-                setIsLoading(true);
-            }
+            if (isFirstLoad) setIsLoading(true);
+        
             setIsRealtimeLoader(true);
-
-            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, gmailuser7, yahoouser1, yahoouser2, zohouser1, zohouser2, zohouser3, yandexuser1, yandexuser2 } = await fetchEmailsFromServer();
-
-            setResultsGmailUser1(
-                gmailuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsGmailUser2(
-                gmailuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsGmailUser3(
-                gmailuser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsGmailUser4(
-                gmailuser4.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsGmailUser5(
-                gmailuser5.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsGmailUser6(
-                gmailuser6.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsGmailUser7(
-                gmailuser7.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsYahooUser1(
-                yahoouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsYahooUser2(
-                yahoouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsZohoUser1(
-                zohouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsZohoUser2(
-                zohouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsZohoUser3(
-                zohouser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsYandexUser1(
-                yandexuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-            setResultsYandexUser2(
-                yandexuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
-
-            setIsLoading(false);
-            setIsFirstLoad(false);
-            setIsRealtimeLoader(false);
-        };
+        
+            fetchEmailsFromServer().then((data) => {
+                setResultsGmailUser1((prev) => [...data.gmailuser1, ...prev].slice(0, 6));
+                setResultsGmailUser2((prev) => [...data.gmailuser2, ...prev].slice(0, 6));
+                setResultsGmailUser3((prev) => [...data.gmailuser3, ...prev].slice(0, 6));
+                setResultsGmailUser4((prev) => [...data.gmailuser4, ...prev].slice(0, 6));
+                setResultsGmailUser5((prev) => [...data.gmailuser5, ...prev].slice(0, 6));
+                setResultsGmailUser6((prev) => [...data.gmailuser6, ...prev].slice(0, 6));
+                setResultsGmailUser7((prev) => [...data.gmailuser7, ...prev].slice(0, 6));
+        
+                setResultsYahooUser1((prev) => [...data.yahoouser1, ...prev].slice(0, 6));
+                setResultsYahooUser2((prev) => [...data.yahoouser2, ...prev].slice(0, 6));
+        
+                setResultsZohoUser1((prev) => [...data.zohouser1, ...prev].slice(0, 6));
+                setResultsZohoUser2((prev) => [...data.zohouser2, ...prev].slice(0, 6));
+                setResultsZohoUser3((prev) => [...data.zohouser3, ...prev].slice(0, 6));
+        
+                setResultsYandexUser1((prev) => [...data.yandexuser1, ...prev].slice(0, 6));
+                setResultsYandexUser2((prev) => [...data.yandexuser2, ...prev].slice(0, 6));
+        
+                setIsLoading(false);
+                setIsFirstLoad(false);
+                setIsRealtimeLoader(false);
+            });
+        };        
 
         fetchEmails();
         const interval = setInterval(fetchEmails, 4000);
