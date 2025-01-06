@@ -32,7 +32,7 @@ export default function HeroSection() {
             </div>
 
             {/* Notice Section */}
-            <motion.div
+            {/* <motion.div
                 initial={{ opacity: 0, y: -10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5 }}
@@ -46,7 +46,7 @@ export default function HeroSection() {
                 <p className="font-semibold">
                     ⚠️ Website servers are currently being updated, which may cause delays or issues while checking your inbox. We appreciate your patience!
                 </p>
-            </motion.div>
+            </motion.div> */}
 
             {/* Decorative Elements */}
             <div className="absolute top-0 left-0 w-32 h-32 bg-teal-100 rounded-full opacity-50 blur-lg -z-10"></div>

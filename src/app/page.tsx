@@ -45,6 +45,19 @@ export default function Home() {
           </button>
         </motion.div>
       )}
+      {/* Notice Section */}
+      <div className="fixed bottom-3 w-full left-[25%]">
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, ease: "easeInOut" }}
+          className="bg-yellow-100 rounded-lg border border-yellow-500 text-yellow-900 p-4 text-center z-50 shadow-xl w-[50%]"
+        >
+          <p className="text-xs sm:text-sm md:text-base font-medium leading-tight">
+            ⚠️ Website servers are currently being updated, which may cause delays or issues while checking your inbox. We appreciate your patience!
+          </p>
+        </motion.div>
+      </div>
     </div>
   );
 }

@@ -543,6 +543,22 @@ export default function TestingSection() {
                     See where your emails are landing — Inbox, Spam, and more.
                 </p>
 
+                <motion.div
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5 }}
+                    className="mt-1 mb-2 max-w-5xl mx-auto bg-yellow-100 border-l-4 border-yellow-500 text-yellow-800 p-4 rounded-lg shadow-lg text-center flex flex-col items-center"
+                >
+                    <img
+                        src="https://media.giphy.com/media/VbnUQpnihPSIgIXuZv/giphy.gif"
+                        alt="Updating Servers Animation"
+                        className="w-12 h-12 mb-3"
+                    />
+                    <p className="font-semibold text-[12px]">
+                        ⚠️ Website servers are currently being updated, which may cause delays or issues while checking your inbox. We appreciate your patience!
+                    </p>
+                </motion.div>
+
                 {/* Search Input */}
                 <div className="flex justify-center items-center mb-6 px-4 max-w-5xl mx-auto">
                     <div className="w-full max-w-4xl p-6 bg-white rounded-lg shadow-md duration-300 hover:shadow-xl">
