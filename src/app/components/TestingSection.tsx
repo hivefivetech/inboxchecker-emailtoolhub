@@ -32,9 +32,42 @@ interface Email {
 }
 
 // IMAP
-const fetchEmailsFromServer = async () => {
+// const fetchEmailsFromServer = async () => {
+//     try {
+//         const response = await fetch("/api/emails");
+//         if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+//         const data = await response.json();
+
+//         if (data.success) {
+//             return {
+//                 gmailuser1: (data.emails.gmailuser1 || []).map(formatEmail),
+//                 gmailuser2: (data.emails.gmailuser2 || []).map(formatEmail),
+//                 gmailuser3: (data.emails.gmailuser3 || []).map(formatEmail),
+//                 gmailuser4: (data.emails.gmailuser4 || []).map(formatEmail),
+//                 gmailuser5: (data.emails.gmailuser5 || []).map(formatEmail),
+//                 gmailuser6: (data.emails.gmailuser6 || []).map(formatEmail),
+//                 gmailuser7: (data.emails.gmailuser7 || []).map(formatEmail),
+//                 yahoouser1: (data.emails.yahoouser1 || []).map(formatEmail),
+//                 yahoouser2: (data.emails.yahoouser2 || []).map(formatEmail),
+//                 zohouser1: (data.emails.zohouser1 || []).map(formatEmail),
+//                 zohouser2: (data.emails.zohouser2 || []).map(formatEmail),
+//                 zohouser3: (data.emails.zohouser3 || []).map(formatEmail),
+//                 yandexuser1: (data.emails.yandexuser1 || []).map(formatEmail),
+//                 yandexuser2: (data.emails.yandexuser2 || []).map(formatEmail),
+//             };
+//         }
+
+//         return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
+//     } catch (error) {
+//         console.error("Error fetching emails from API:", error);
+//         return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
+//     }
+// };
+
+// IMAP GMAIL
+const fetchEmailsFromServerGmail = async () => {
     try {
-        const response = await fetch("/api/emails");
+        const response = await fetch("/api/emailsGmail");
         if (!response.ok) throw new Error(`Error: ${response.statusText}`);
         const data = await response.json();
 
@@ -47,20 +80,77 @@ const fetchEmailsFromServer = async () => {
                 gmailuser5: (data.emails.gmailuser5 || []).map(formatEmail),
                 gmailuser6: (data.emails.gmailuser6 || []).map(formatEmail),
                 gmailuser7: (data.emails.gmailuser7 || []).map(formatEmail),
+            };
+        }
+
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [] };
+    } catch (error) {
+        console.error("Error fetching emails from API:", error);
+        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [] };
+    }
+};
+
+// IMAP YAHOO
+const fetchEmailsFromServerYahoo = async () => {
+    try {
+        const response = await fetch("/api/emailsYahoo");
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+        const data = await response.json();
+
+        if (data.success) {
+            return {
                 yahoouser1: (data.emails.yahoouser1 || []).map(formatEmail),
                 yahoouser2: (data.emails.yahoouser2 || []).map(formatEmail),
+            };
+        }
+
+        return { yahoouser1: [], yahoouser2: [] };
+    } catch (error) {
+        console.error("Error fetching emails from API:", error);
+        return { yahoouser1: [], yahoouser2: [] };
+    }
+};
+
+// IMAP ZOHO
+const fetchEmailsFromServerZoho = async () => {
+    try {
+        const response = await fetch("/api/emailsZoho");
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+        const data = await response.json();
+
+        if (data.success) {
+            return {
                 zohouser1: (data.emails.zohouser1 || []).map(formatEmail),
                 zohouser2: (data.emails.zohouser2 || []).map(formatEmail),
                 zohouser3: (data.emails.zohouser3 || []).map(formatEmail),
+            };
+        }
+
+        return { zohouser1: [], zohouser2: [], zohouser3: [] };
+    } catch (error) {
+        console.error("Error fetching emails from API:", error);
+        return { zohouser1: [], zohouser2: [], zohouser3: [] };
+    }
+};
+
+// IMAP YANDEX
+const fetchEmailsFromServerYandex = async () => {
+    try {
+        const response = await fetch("/api/emailsYandex");
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+        const data = await response.json();
+
+        if (data.success) {
+            return {
                 yandexuser1: (data.emails.yandexuser1 || []).map(formatEmail),
                 yandexuser2: (data.emails.yandexuser2 || []).map(formatEmail),
             };
         }
 
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
+        return { yandexuser1: [], yandexuser2: [] };
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
+        return { yandexuser1: [], yandexuser2: [] };
     }
 };
 
@@ -143,10 +233,25 @@ export default function TestingSection() {
     const [selectedTabZohoUser3, setSelectedTabZohoUser3] = useState("All");
     const [selectedTabYandexUser1, setSelectedTabYandexUser1] = useState("All");
     const [selectedTabYandexUser2, setSelectedTabYandexUser2] = useState("All");
+
     const [searchQuery, setSearchQuery] = useState("");
+
     const [isLoading, setIsLoading] = useState(true);
     const [isRealtimeLoader, setIsRealtimeLoader] = useState(true);
     const [isFirstLoad, setIsFirstLoad] = useState(true);
+
+    const [isLoadingYahoo, setIsLoadingYahoo] = useState(true);
+    const [isRealtimeLoaderYahoo, setIsRealtimeLoaderYahoo] = useState(true);
+    const [isFirstLoadYahoo, setIsFirstLoadYahoo] = useState(true);
+
+    const [isLoadingZoho, setIsLoadingZoho] = useState(true);
+    const [isRealtimeLoaderZoho, setIsRealtimeLoaderZoho] = useState(true);
+    const [isFirstLoadZoho, setIsFirstLoadZoho] = useState(true);
+
+    const [isLoadingYandex, setIsLoadingYandex] = useState(true);
+    const [isRealtimeLoaderYandex, setIsRealtimeLoaderYandex] = useState(true);
+    const [isFirstLoadYandex, setIsFirstLoadYandex] = useState(true);
+
     const [selectedProvider, setSelectedProvider] = useState("all");
 
     const tabs = [
@@ -156,39 +261,195 @@ export default function TestingSection() {
     ];
 
     // IMAP
-    useEffect(() => {
-        const fetchEmails = async () => {
-            if (isFirstLoad) setIsLoading(true);
-        
-            setIsRealtimeLoader(true);
-        
-            fetchEmailsFromServer().then((data) => {
-                setResultsGmailUser1((prev) => [...data.gmailuser1, ...prev].slice(0, 6));
-                setResultsGmailUser2((prev) => [...data.gmailuser2, ...prev].slice(0, 6));
-                setResultsGmailUser3((prev) => [...data.gmailuser3, ...prev].slice(0, 6));
-                setResultsGmailUser4((prev) => [...data.gmailuser4, ...prev].slice(0, 6));
-                setResultsGmailUser5((prev) => [...data.gmailuser5, ...prev].slice(0, 6));
-                setResultsGmailUser6((prev) => [...data.gmailuser6, ...prev].slice(0, 6));
-                setResultsGmailUser7((prev) => [...data.gmailuser7, ...prev].slice(0, 6));
-        
-                setResultsYahooUser1((prev) => [...data.yahoouser1, ...prev].slice(0, 6));
-                setResultsYahooUser2((prev) => [...data.yahoouser2, ...prev].slice(0, 6));
-        
-                setResultsZohoUser1((prev) => [...data.zohouser1, ...prev].slice(0, 6));
-                setResultsZohoUser2((prev) => [...data.zohouser2, ...prev].slice(0, 6));
-                setResultsZohoUser3((prev) => [...data.zohouser3, ...prev].slice(0, 6));
-        
-                setResultsYandexUser1((prev) => [...data.yandexuser1, ...prev].slice(0, 6));
-                setResultsYandexUser2((prev) => [...data.yandexuser2, ...prev].slice(0, 6));
-        
-                setIsLoading(false);
-                setIsFirstLoad(false);
-                setIsRealtimeLoader(false);
-            });
-        };        
+    // useEffect(() => {
+    //     const fetchEmails = async () => {
+    //         if (isFirstLoad) {
+    //             setIsLoading(true);
+    //         }
+    //         setIsRealtimeLoader(true);
 
-        fetchEmails();
-        const interval = setInterval(fetchEmails, 4000);
+    //         const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, gmailuser7, yahoouser1, yahoouser2, zohouser1, zohouser2, zohouser3, yandexuser1, yandexuser2 } = await fetchEmailsFromServer();
+
+    //         setResultsGmailUser1(
+    //             gmailuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsGmailUser2(
+    //             gmailuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsGmailUser3(
+    //             gmailuser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsGmailUser4(
+    //             gmailuser4.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsGmailUser5(
+    //             gmailuser5.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsGmailUser6(
+    //             gmailuser6.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsGmailUser7(
+    //             gmailuser7.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsYahooUser1(
+    //             yahoouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsYahooUser2(
+    //             yahoouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsZohoUser1(
+    //             zohouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsZohoUser2(
+    //             zohouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsZohoUser3(
+    //             zohouser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsYandexUser1(
+    //             yandexuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+    //         setResultsYandexUser2(
+    //             yandexuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+    //         );
+
+    //         setIsLoading(false);
+    //         setIsFirstLoad(false);
+    //         setIsRealtimeLoader(false);
+    //     };
+
+    //     fetchEmails();
+    //     const interval = setInterval(fetchEmails, 4000);
+
+    //     return () => clearInterval(interval);
+    // }, []);
+
+    // IMAP GMAIL
+    useEffect(() => {
+        const fetchEmailsGmail = async () => {
+            if (isFirstLoad) {
+                setIsLoading(true);
+            }
+            setIsRealtimeLoader(true);
+
+            const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, gmailuser7 } = await fetchEmailsFromServerGmail();
+
+            setResultsGmailUser1(
+                gmailuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsGmailUser2(
+                gmailuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsGmailUser3(
+                gmailuser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsGmailUser4(
+                gmailuser4.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsGmailUser5(
+                gmailuser5.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsGmailUser6(
+                gmailuser6.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsGmailUser7(
+                gmailuser7.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+
+            setIsLoading(false);
+            setIsFirstLoad(false);
+            setIsRealtimeLoader(false);
+        };
+
+        fetchEmailsGmail();
+        const interval = setInterval(fetchEmailsGmail, 10000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // IMAP YAHOO
+    useEffect(() => {
+        const fetchEmailsYahoo = async () => {
+            if (isFirstLoadYahoo) {
+                setIsLoadingYahoo(true);
+            }
+            setIsRealtimeLoaderYahoo(true);
+
+            const { yahoouser1, yahoouser2 } = await fetchEmailsFromServerYahoo();
+
+            setResultsYahooUser1(
+                yahoouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsYahooUser2(
+                yahoouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+
+            setIsLoadingYahoo(false);
+            setIsFirstLoadYahoo(false);
+            setIsRealtimeLoaderYahoo(false);
+        };
+
+        fetchEmailsYahoo();
+        const interval = setInterval(fetchEmailsYahoo, 10000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // IMAP ZOHO
+    useEffect(() => {
+        const fetchEmailsZoho = async () => {
+            if (isFirstLoadZoho) {
+                setIsLoadingZoho(true);
+            }
+            setIsRealtimeLoaderZoho(true);
+
+            const { zohouser1, zohouser2, zohouser3 } = await fetchEmailsFromServerZoho();
+
+            setResultsZohoUser1(
+                zohouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsZohoUser2(
+                zohouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsZohoUser3(
+                zohouser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+
+            setIsLoadingZoho(false);
+            setIsFirstLoadZoho(false);
+            setIsRealtimeLoaderZoho(false);
+        };
+
+        fetchEmailsZoho();
+        const interval = setInterval(fetchEmailsZoho, 4000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // IMAP YANDEX
+    useEffect(() => {
+        const fetchEmailsYandex = async () => {
+            if (isFirstLoadYandex) {
+                setIsLoadingYandex(true);
+            }
+            setIsRealtimeLoaderYandex(true);
+
+            const { yandexuser1, yandexuser2 } = await fetchEmailsFromServerYandex();
+
+            setResultsYandexUser1(
+                yandexuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+            setResultsYandexUser2(
+                yandexuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+            );
+
+            setIsLoadingYandex(false);
+            setIsFirstLoadYandex(false);
+            setIsRealtimeLoaderYandex(false);
+        };
+
+        fetchEmailsYandex();
+        const interval = setInterval(fetchEmailsYandex, 10000);
 
         return () => clearInterval(interval);
     }, []);
@@ -622,8 +883,8 @@ export default function TestingSection() {
                                 tabs={tabs}
                                 filteredTabResults={filteredEmails.yahoo[0]}
                                 image={YahooImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingYahoo && isFirstLoadYahoo}
+                                isRealtimeLoader={isRealtimeLoaderYahoo}
                                 setSearchQuery={setSearchQuery}
                             />
                             <EmailSection
@@ -634,8 +895,8 @@ export default function TestingSection() {
                                 tabs={tabs}
                                 filteredTabResults={filteredEmails.yahoo[1]}
                                 image={YahooImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingYahoo && isFirstLoadYahoo}
+                                isRealtimeLoader={isRealtimeLoaderYahoo}
                                 setSearchQuery={setSearchQuery}
                             />
                         </>
@@ -652,8 +913,8 @@ export default function TestingSection() {
                                 tabs={tabs}
                                 filteredTabResults={filteredEmails.zoho[0]}
                                 image={ZohoImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingZoho && isFirstLoadZoho}
+                                isRealtimeLoader={isRealtimeLoaderZoho}
                                 setSearchQuery={setSearchQuery}
                             />
                             <EmailSection
@@ -664,8 +925,8 @@ export default function TestingSection() {
                                 tabs={tabs}
                                 filteredTabResults={filteredEmails.zoho[1]}
                                 image={ZohoImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingZoho && isFirstLoadZoho}
+                                isRealtimeLoader={isRealtimeLoaderZoho}
                                 setSearchQuery={setSearchQuery}
                             />
                             <EmailSection
@@ -676,8 +937,8 @@ export default function TestingSection() {
                                 tabs={tabs}
                                 filteredTabResults={filteredEmails.zoho[2]}
                                 image={ZohoImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingZoho && isFirstLoadZoho}
+                                isRealtimeLoader={isRealtimeLoaderZoho}
                                 setSearchQuery={setSearchQuery}
                             />
                         </>
@@ -694,8 +955,8 @@ export default function TestingSection() {
                                 tabs={tabs}
                                 filteredTabResults={filteredEmails.yandex[0]}
                                 image={YandexImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingYandex && isFirstLoadYandex}
+                                isRealtimeLoader={isRealtimeLoaderYandex}
                                 setSearchQuery={setSearchQuery}
                             />
                             <EmailSection
@@ -706,8 +967,8 @@ export default function TestingSection() {
                                 tabs={tabs}
                                 filteredTabResults={filteredEmails.yandex[1]}
                                 image={YandexImage}
-                                isLoading={isLoading && isFirstLoad}
-                                isRealtimeLoader={isRealtimeLoader}
+                                isLoading={isLoadingYandex && isFirstLoadYandex}
+                                isRealtimeLoader={isRealtimeLoaderYandex}
                                 setSearchQuery={setSearchQuery}
                             />
                         </>

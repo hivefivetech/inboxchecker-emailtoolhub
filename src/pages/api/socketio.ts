@@ -20,23 +20,37 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         const io = new Server(socket.server, {
             path: "/api/socketio",
             cors: {
-                origin: "*", // Replace with your frontend URL in production
+                origin: "*", // Replace with frontend URL in production
                 methods: ["GET", "POST"],
             },
         });
 
-        let activeUsers = 0;
+        let activeUsersPerIP: Record<string, number> = {}; // Track users per IP
 
         io.on("connection", (socket) => {
-            activeUsers++;
-            io.emit("activeUsers", activeUsers);
+            const ip = socket.handshake.address;
 
-            console.log(`User connected. Total users: ${activeUsers}`);
+            if (!activeUsersPerIP[ip]) {
+                activeUsersPerIP[ip] = 1;
+            } else {
+                activeUsersPerIP[ip]++;
+            }
+
+            const uniqueUsers = Object.keys(activeUsersPerIP).length;
+            io.emit("activeUsers", uniqueUsers);
+
+            console.log(`User connected from ${ip}. Unique users: ${uniqueUsers}`);
 
             socket.on("disconnect", () => {
-                activeUsers--;
-                io.emit("activeUsers", activeUsers);
-                console.log(`User disconnected. Total users: ${activeUsers}`);
+                if (activeUsersPerIP[ip]) {
+                    activeUsersPerIP[ip]--;
+                    if (activeUsersPerIP[ip] === 0) delete activeUsersPerIP[ip];
+                }
+
+                const uniqueUsers = Object.keys(activeUsersPerIP).length;
+                io.emit("activeUsers", uniqueUsers);
+
+                console.log(`User disconnected from ${ip}. Unique users: ${uniqueUsers}`);
             });
         });
 

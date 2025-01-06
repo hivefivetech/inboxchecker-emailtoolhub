@@ -1,15 +1,15 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { fetchEmailsForBothAccounts } from "@/services/imapService";
+import { fetchEmailsForYahoo } from "@/services/imapServiceYahoo";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method === "GET") {
         try {
-            const folders = ["Inbox", "Spam"];
-            const emails = await fetchEmailsForBothAccounts(folders);
+            const folders = ["Inbox", "Bulk"];
+            const emails = await fetchEmailsForYahoo(folders);
             res.status(200).json({ success: true, emails });
         } catch (error) {
-            console.error("Error in API handler:", error);
-            res.status(500).json({ success: false, message: "Failed to fetch emails." });
+            console.error("Error fetching Yahoo emails:", error);
+            res.status(500).json({ success: false, message: "Failed to fetch Yahoo emails." });
         }
     } else {
         res.setHeader("Allow", ["GET"]);

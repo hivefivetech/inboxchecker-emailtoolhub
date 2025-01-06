@@ -7,16 +7,18 @@ export default function Footer() {
     const [activeUsers, setActiveUsers] = useState(0);
 
     useEffect(() => {
-        const socket = io({
-            path: "/api/socketio",
-        });
+        let socket = (window as any).socketInstance;
+        if (!socket) {
+            socket = io({ path: "/api/socketio" });
+            (window as any).socketInstance = socket;
+        }
 
-        socket.on("activeUsers", (count) => {
+        socket.on("activeUsers", (count: any) => {
             setActiveUsers(count);
         });
 
         return () => {
-            socket.disconnect();
+            socket.off("activeUsers");
         };
     }, []);
 
