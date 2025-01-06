@@ -25,7 +25,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             },
         });
 
-        let activeUsersPerIP: Record<string, number> = {}; // Track users per IP
+        const activeUsersPerIP: Record<string, number> = {}; // Track users per IP
 
         io.on("connection", (socket) => {
             const ip = socket.handshake.address;
