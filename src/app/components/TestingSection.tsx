@@ -31,38 +31,10 @@ interface Email {
     snippet: string;
 }
 
-// IMAP
-// const fetchEmailsFromServer = async () => {
-//     try {
-//         const response = await fetch("/api/emails");
-//         if (!response.ok) throw new Error(`Error: ${response.statusText}`);
-//         const data = await response.json();
-
-//         if (data.success) {
-//             return {
-//                 gmailuser1: (data.emails.gmailuser1 || []).map(formatEmail),
-//                 gmailuser2: (data.emails.gmailuser2 || []).map(formatEmail),
-//                 gmailuser3: (data.emails.gmailuser3 || []).map(formatEmail),
-//                 gmailuser4: (data.emails.gmailuser4 || []).map(formatEmail),
-//                 gmailuser5: (data.emails.gmailuser5 || []).map(formatEmail),
-//                 gmailuser6: (data.emails.gmailuser6 || []).map(formatEmail),
-//                 gmailuser7: (data.emails.gmailuser7 || []).map(formatEmail),
-//                 yahoouser1: (data.emails.yahoouser1 || []).map(formatEmail),
-//                 yahoouser2: (data.emails.yahoouser2 || []).map(formatEmail),
-//                 zohouser1: (data.emails.zohouser1 || []).map(formatEmail),
-//                 zohouser2: (data.emails.zohouser2 || []).map(formatEmail),
-//                 zohouser3: (data.emails.zohouser3 || []).map(formatEmail),
-//                 yandexuser1: (data.emails.yandexuser1 || []).map(formatEmail),
-//                 yandexuser2: (data.emails.yandexuser2 || []).map(formatEmail),
-//             };
-//         }
-
-//         return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
-//     } catch (error) {
-//         console.error("Error fetching emails from API:", error);
-//         return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [], yahoouser1: [], yahoouser2: [], zohouser1: [], zohouser2: [], zohouser3: [], yandexuser1: [], yandexuser2: [] };
-//     }
-// };
+let previousEmailsGmail: any = {};
+let previousEmailsYahoo: any = {};
+let previousEmailsZoho: any = {};
+let previousEmailsYandex: any = {};
 
 // IMAP GMAIL
 const fetchEmailsFromServerGmail = async () => {
@@ -71,8 +43,8 @@ const fetchEmailsFromServerGmail = async () => {
         if (!response.ok) throw new Error(`Error: ${response.statusText}`);
         const data = await response.json();
 
-        if (data.success) {
-            return {
+        if (data.success && Object.values(data.emails).some((list: any) => list.length > 0)) {
+            previousEmailsGmail = {
                 gmailuser1: (data.emails.gmailuser1 || []).map(formatEmail),
                 gmailuser2: (data.emails.gmailuser2 || []).map(formatEmail),
                 gmailuser3: (data.emails.gmailuser3 || []).map(formatEmail),
@@ -83,10 +55,10 @@ const fetchEmailsFromServerGmail = async () => {
             };
         }
 
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [] };
+        return previousEmailsGmail;
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { gmailuser1: [], gmailuser2: [], gmailuser3: [], gmailuser4: [], gmailuser5: [], gmailuser6: [], gmailuser7: [] };
+        return previousEmailsGmail;
     }
 };
 
@@ -97,17 +69,17 @@ const fetchEmailsFromServerYahoo = async () => {
         if (!response.ok) throw new Error(`Error: ${response.statusText}`);
         const data = await response.json();
 
-        if (data.success) {
-            return {
+        if (data.success && Object.values(data.emails).some((list: any) => list.length > 0)) {
+            previousEmailsYahoo = {
                 yahoouser1: (data.emails.yahoouser1 || []).map(formatEmail),
                 yahoouser2: (data.emails.yahoouser2 || []).map(formatEmail),
             };
         }
 
-        return { yahoouser1: [], yahoouser2: [] };
+        return previousEmailsYahoo;
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { yahoouser1: [], yahoouser2: [] };
+        return previousEmailsYahoo;
     }
 };
 
@@ -118,18 +90,18 @@ const fetchEmailsFromServerZoho = async () => {
         if (!response.ok) throw new Error(`Error: ${response.statusText}`);
         const data = await response.json();
 
-        if (data.success) {
-            return {
+        if (data.success && Object.values(data.emails).some((list: any) => list.length > 0)) {
+            previousEmailsZoho = {
                 zohouser1: (data.emails.zohouser1 || []).map(formatEmail),
                 zohouser2: (data.emails.zohouser2 || []).map(formatEmail),
                 zohouser3: (data.emails.zohouser3 || []).map(formatEmail),
             };
         }
 
-        return { zohouser1: [], zohouser2: [], zohouser3: [] };
+        return previousEmailsZoho;
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { zohouser1: [], zohouser2: [], zohouser3: [] };
+        return previousEmailsZoho;
     }
 };
 
@@ -140,17 +112,17 @@ const fetchEmailsFromServerYandex = async () => {
         if (!response.ok) throw new Error(`Error: ${response.statusText}`);
         const data = await response.json();
 
-        if (data.success) {
-            return {
+        if (data.success && Object.values(data.emails).some((list: any) => list.length > 0)) {
+            previousEmailsYandex = {
                 yandexuser1: (data.emails.yandexuser1 || []).map(formatEmail),
                 yandexuser2: (data.emails.yandexuser2 || []).map(formatEmail),
             };
         }
 
-        return { yandexuser1: [], yandexuser2: [] };
+        return previousEmailsYandex;
     } catch (error) {
         console.error("Error fetching emails from API:", error);
-        return { yandexuser1: [], yandexuser2: [] };
+        return previousEmailsYandex;
     }
 };
 
@@ -260,70 +232,6 @@ export default function TestingSection() {
         { label: "Spam", value: "Spam" },
     ];
 
-    // IMAP
-    // useEffect(() => {
-    //     const fetchEmails = async () => {
-    //         if (isFirstLoad) {
-    //             setIsLoading(true);
-    //         }
-    //         setIsRealtimeLoader(true);
-
-    //         const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, gmailuser7, yahoouser1, yahoouser2, zohouser1, zohouser2, zohouser3, yandexuser1, yandexuser2 } = await fetchEmailsFromServer();
-
-    //         setResultsGmailUser1(
-    //             gmailuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsGmailUser2(
-    //             gmailuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsGmailUser3(
-    //             gmailuser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsGmailUser4(
-    //             gmailuser4.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsGmailUser5(
-    //             gmailuser5.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsGmailUser6(
-    //             gmailuser6.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsGmailUser7(
-    //             gmailuser7.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsYahooUser1(
-    //             yahoouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsYahooUser2(
-    //             yahoouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsZohoUser1(
-    //             zohouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsZohoUser2(
-    //             zohouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsZohoUser3(
-    //             zohouser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsYandexUser1(
-    //             yandexuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-    //         setResultsYandexUser2(
-    //             yandexuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-    //         );
-
-    //         setIsLoading(false);
-    //         setIsFirstLoad(false);
-    //         setIsRealtimeLoader(false);
-    //     };
-
-    //     fetchEmails();
-    //     const interval = setInterval(fetchEmails, 4000);
-
-    //     return () => clearInterval(interval);
-    // }, []);
-
     // IMAP GMAIL
     useEffect(() => {
         const fetchEmailsGmail = async () => {
@@ -335,26 +243,26 @@ export default function TestingSection() {
             const { gmailuser1, gmailuser2, gmailuser3, gmailuser4, gmailuser5, gmailuser6, gmailuser7 } = await fetchEmailsFromServerGmail();
 
             setResultsGmailUser1(
-                gmailuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                gmailuser1.length > 0 ? gmailuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsGmailUser1
             );
             setResultsGmailUser2(
-                gmailuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                gmailuser2.length > 0 ? gmailuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsGmailUser2
             );
             setResultsGmailUser3(
-                gmailuser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                gmailuser3.length > 0 ? gmailuser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsGmailUser3
             );
             setResultsGmailUser4(
-                gmailuser4.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                gmailuser4.length > 0 ? gmailuser4.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsGmailUser4
             );
             setResultsGmailUser5(
-                gmailuser5.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                gmailuser5.length > 0 ? gmailuser5.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsGmailUser5
             );
             setResultsGmailUser6(
-                gmailuser6.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                gmailuser6.length > 0 ? gmailuser6.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsGmailUser6
             );
             setResultsGmailUser7(
-                gmailuser7.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
+                gmailuser7.length > 0 ? gmailuser7.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsGmailUser7
+            );            
 
             setIsLoading(false);
             setIsFirstLoad(false);
@@ -378,11 +286,11 @@ export default function TestingSection() {
             const { yahoouser1, yahoouser2 } = await fetchEmailsFromServerYahoo();
 
             setResultsYahooUser1(
-                yahoouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                yahoouser1.length > 0 ? yahoouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsYahooUser1
             );
             setResultsYahooUser2(
-                yahoouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
+                yahoouser2.length > 0 ? yahoouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsYahooUser2
+            );            
 
             setIsLoadingYahoo(false);
             setIsFirstLoadYahoo(false);
@@ -406,14 +314,14 @@ export default function TestingSection() {
             const { zohouser1, zohouser2, zohouser3 } = await fetchEmailsFromServerZoho();
 
             setResultsZohoUser1(
-                zohouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                zohouser1.length > 0 ? zohouser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsZohoUser1
             );
             setResultsZohoUser2(
-                zohouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                zohouser2.length > 0 ? zohouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsZohoUser2
             );
             setResultsZohoUser3(
-                zohouser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
+                zohouser3.length > 0 ? zohouser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsZohoUser3
+            );            
 
             setIsLoadingZoho(false);
             setIsFirstLoadZoho(false);
@@ -437,11 +345,11 @@ export default function TestingSection() {
             const { yandexuser1, yandexuser2 } = await fetchEmailsFromServerYandex();
 
             setResultsYandexUser1(
-                yandexuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
+                yandexuser1.length > 0 ? yandexuser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsYandexUser1
             );
             setResultsYandexUser2(
-                yandexuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime())
-            );
+                yandexuser2.length > 0 ? yandexuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsYandexUser2
+            );            
 
             setIsLoadingYandex(false);
             setIsFirstLoadYandex(false);

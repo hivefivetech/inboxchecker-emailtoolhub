@@ -25,39 +25,50 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             },
         });
 
-        const activeUsersPerIP: Record<string, number> = {}; // Track users per IP
+        const activeUsersPerIP = new Map<string, Set<string>>(); // IP -> Set of socket IDs
 
         io.on("connection", (socket) => {
-            const ip = socket.handshake.address;
+            // Extract IP properly from headers
+            let ip = socket.handshake.headers["x-forwarded-for"] || socket.handshake.address;
+            
+            // If multiple IPs are returned (common with proxies), take the first valid one
+            if (Array.isArray(ip)) ip = ip[0];
 
-            if (!activeUsersPerIP[ip]) {
-                activeUsersPerIP[ip] = 1;
-            } else {
-                activeUsersPerIP[ip]++;
+            // Remove IPv6 localhost "::1" and normalize localhost IP
+            if (!ip || ip === "::1" || ip === "127.0.0.1") ip = "localhost";
+
+            console.log(`🔍 New connection detected from IP: ${ip}`);
+
+            // Ensure correct counting for unique users per IP
+            if (!activeUsersPerIP.has(ip)) {
+                activeUsersPerIP.set(ip, new Set());
             }
+            activeUsersPerIP.get(ip)?.add(socket.id);
 
-            const uniqueUsers = Object.keys(activeUsersPerIP).length;
-            io.emit("activeUsers", uniqueUsers);
+            // Broadcast unique user count
+            io.emit("activeUsers", activeUsersPerIP.size);
+            console.log(`✅ Active Users Updated: ${activeUsersPerIP.size}`);
 
-            console.log(`User connected from ${ip}. Unique users: ${uniqueUsers}`);
-
+            // Handle disconnections properly
             socket.on("disconnect", () => {
-                if (activeUsersPerIP[ip]) {
-                    activeUsersPerIP[ip]--;
-                    if (activeUsersPerIP[ip] === 0) delete activeUsersPerIP[ip];
+                console.log(`❌ Disconnected: ${socket.id} from IP: ${ip}`);
+
+                if (activeUsersPerIP.has(ip)) {
+                    activeUsersPerIP.get(ip)?.delete(socket.id);
+                    if (activeUsersPerIP.get(ip)?.size === 0) {
+                        activeUsersPerIP.delete(ip);
+                    }
                 }
 
-                const uniqueUsers = Object.keys(activeUsersPerIP).length;
-                io.emit("activeUsers", uniqueUsers);
-
-                console.log(`User disconnected from ${ip}. Unique users: ${uniqueUsers}`);
+                io.emit("activeUsers", activeUsersPerIP.size);
+                console.log(`🔻 Active Users Updated: ${activeUsersPerIP.size}`);
             });
         });
 
         socket.server.io = io;
-        console.log("Socket.IO server initialized");
+        console.log("🚀 Socket.IO server initialized");
     } else {
-        console.log("Socket.IO server already running");
+        console.log("⚡ Socket.IO server already running");
     }
 
     res.end();

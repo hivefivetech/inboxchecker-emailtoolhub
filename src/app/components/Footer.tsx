@@ -12,15 +12,15 @@ export default function Footer() {
             socket = io({ path: "/api/socketio" });
             (window as any).socketInstance = socket;
         }
-
+    
         socket.on("activeUsers", (count: any) => {
             setActiveUsers(count);
         });
-
+    
         return () => {
             socket.off("activeUsers");
         };
-    }, []);
+    }, []);    
 
     return (
         <footer className="bg-gradient-to-r from-gray-900 to-gray-700 text-gray-200 py-10">
