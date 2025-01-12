@@ -10,6 +10,7 @@ import GmailImage from "../assets/images/gmail.png";
 import YahooImage from "../assets/images/yahoo.png";
 import ZohoImage from "../assets/images/zoho.png";
 import YandexImage from "../assets/images/yandex.png";
+import AolImage from "../assets/images/aol.png";
 
 interface EmailResult {
     name: string;
@@ -35,6 +36,7 @@ let previousEmailsGmail: any = {};
 let previousEmailsYahoo: any = {};
 let previousEmailsZoho: any = {};
 let previousEmailsYandex: any = {};
+let previousEmailsAol: any = {};
 
 // IMAP GMAIL
 const fetchEmailsFromServerGmail = async () => {
@@ -126,6 +128,26 @@ const fetchEmailsFromServerYandex = async () => {
     }
 };
 
+// IMAP YANDEX
+const fetchEmailsFromServerAol = async () => {
+    try {
+        const response = await fetch("/api/emailsAol");
+        if (!response.ok) throw new Error(`Error: ${response.statusText}`);
+        const data = await response.json();
+
+        if (data.success && Object.values(data.emails).some((list: any) => list.length > 0)) {
+            previousEmailsAol = {
+                aoluser1: (data.emails.aoluser1 || []).map(formatEmail),
+            };
+        }
+
+        return previousEmailsAol;
+    } catch (error) {
+        console.error("Error fetching emails from API:", error);
+        return previousEmailsAol;
+    }
+};
+
 const formatEmail = (email: any) => {
     const originalEmail = email.from?.address || "Unknown Email";
 
@@ -191,6 +213,11 @@ export default function TestingSection() {
         { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
     >([]);
 
+    // Aol
+    const [resultsAolUser1, setResultsAolUser1] = useState<
+        { name: string; email: string; maskedEmail: string; subject: string; status: string; date: Date }[]
+    >([]);
+
     const [selectedTabGmailUser1, setSelectedTabGmailUser1] = useState("All");
     const [selectedTabGmailUser2, setSelectedTabGmailUser2] = useState("All");
     const [selectedTabGmailUser3, setSelectedTabGmailUser3] = useState("All");
@@ -205,6 +232,7 @@ export default function TestingSection() {
     const [selectedTabZohoUser3, setSelectedTabZohoUser3] = useState("All");
     const [selectedTabYandexUser1, setSelectedTabYandexUser1] = useState("All");
     const [selectedTabYandexUser2, setSelectedTabYandexUser2] = useState("All");
+    const [selectedTabAolUser1, setSelectedTabAolUser1] = useState("All");
 
     const [searchQuery, setSearchQuery] = useState("");
 
@@ -223,6 +251,10 @@ export default function TestingSection() {
     const [isLoadingYandex, setIsLoadingYandex] = useState(true);
     const [isRealtimeLoaderYandex, setIsRealtimeLoaderYandex] = useState(true);
     const [isFirstLoadYandex, setIsFirstLoadYandex] = useState(true);
+
+    const [isLoadingAol, setIsLoadingAol] = useState(true);
+    const [isRealtimeLoaderAol, setIsRealtimeLoaderAol] = useState(true);
+    const [isFirstLoadAol, setIsFirstLoadAol] = useState(true);
 
     const [selectedProvider, setSelectedProvider] = useState("all");
 
@@ -262,7 +294,7 @@ export default function TestingSection() {
             );
             setResultsGmailUser7(
                 gmailuser7.length > 0 ? gmailuser7.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsGmailUser7
-            );            
+            );
 
             setIsLoading(false);
             setIsFirstLoad(false);
@@ -290,7 +322,7 @@ export default function TestingSection() {
             );
             setResultsYahooUser2(
                 yahoouser2.length > 0 ? yahoouser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsYahooUser2
-            );            
+            );
 
             setIsLoadingYahoo(false);
             setIsFirstLoadYahoo(false);
@@ -321,7 +353,7 @@ export default function TestingSection() {
             );
             setResultsZohoUser3(
                 zohouser3.length > 0 ? zohouser3.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsZohoUser3
-            );            
+            );
 
             setIsLoadingZoho(false);
             setIsFirstLoadZoho(false);
@@ -349,7 +381,7 @@ export default function TestingSection() {
             );
             setResultsYandexUser2(
                 yandexuser2.length > 0 ? yandexuser2.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsYandexUser2
-            );            
+            );
 
             setIsLoadingYandex(false);
             setIsFirstLoadYandex(false);
@@ -358,6 +390,31 @@ export default function TestingSection() {
 
         fetchEmailsYandex();
         const interval = setInterval(fetchEmailsYandex, 10000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // IMAP YANDEX
+    useEffect(() => {
+        const fetchEmailsAol = async () => {
+            if (isFirstLoadYandex) {
+                setIsLoadingAol(true);
+            }
+            setIsRealtimeLoaderAol(true);
+
+            const { aoluser1 } = await fetchEmailsFromServerAol();
+
+            setResultsAolUser1(
+                aoluser1.length > 0 ? aoluser1.sort((a: Email, b: Email) => new Date(b.date).getTime() - new Date(a.date).getTime()) : resultsAolUser1
+            );
+
+            setIsLoadingAol(false);
+            setIsFirstLoadAol(false);
+            setIsRealtimeLoaderAol(false);
+        };
+
+        fetchEmailsAol();
+        const interval = setInterval(fetchEmailsAol, 10000);
 
         return () => clearInterval(interval);
     }, []);
@@ -386,6 +443,9 @@ export default function TestingSection() {
             { results: resultsYandexUser1, selectedTab: selectedTabYandexUser1 },
             { results: resultsYandexUser2, selectedTab: selectedTabYandexUser2 },
         ],
+        aol: [
+            { results: resultsAolUser1, selectedTab: selectedTabAolUser1 },
+        ],
     };
 
     const filterEmails = (emailData: any) => {
@@ -406,6 +466,7 @@ export default function TestingSection() {
         yahoo: filterEmails(emailResults.yahoo),
         zoho: filterEmails(emailResults.zoho),
         yandex: filterEmails(emailResults.yandex),
+        aol: filterEmails(emailResults.aol),
     };
     // Filter Emails End
 
@@ -432,14 +493,16 @@ export default function TestingSection() {
         };
     };
 
-    const gmailAllEmails = [...resultsGmailUser1, ...resultsGmailUser2, ...resultsGmailUser3, ...resultsGmailUser4, ...resultsGmailUser5, ...resultsGmailUser6, ...resultsGmailUser6];
+    const gmailAllEmails = [...resultsGmailUser1, ...resultsGmailUser2, ...resultsGmailUser3, ...resultsGmailUser4, ...resultsGmailUser5, ...resultsGmailUser6, ...resultsGmailUser7];
     const yahooAllEmails = [...resultsYahooUser1, ...resultsYahooUser2];
     const zohoAllEmails = [...resultsZohoUser1, ...resultsZohoUser2, ...resultsZohoUser3];
     const yandexAllEmails = [...resultsYandexUser1, ...resultsYandexUser2];
+    const aolAllEmails = [...resultsAolUser1];
     const gmailPercentages = calculateSimplePercentage(gmailAllEmails, searchQuery);
     const yahooPercentages = calculateSimplePercentage(yahooAllEmails, searchQuery);
     const zohoPercentages = calculateSimplePercentage(zohoAllEmails, searchQuery);
     const yandexPercentages = calculateSimplePercentage(yandexAllEmails, searchQuery);
+    const aolPercentages = calculateSimplePercentage(aolAllEmails, searchQuery);
 
     return (
         <section className="relative bg-gray-50 py-20 px-6">
@@ -582,6 +645,28 @@ export default function TestingSection() {
                                     Spam: <span className="font-bold text-red-500">{yandexPercentages.spam}%</span>
                                 </p>
                             </div>
+
+                            {/* Aol */}
+                            <div className="mb-4">
+                                <h4 className="text-sm font-bold text-gray-800">Aol</h4>
+                                <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden">
+                                    <div
+                                        className="absolute h-full bg-green-500"
+                                        style={{ width: `${aolPercentages.inbox}%` }}
+                                    ></div>
+                                    <div
+                                        className="absolute h-full bg-red-500"
+                                        style={{
+                                            width: `${aolPercentages.spam}%`,
+                                            left: `${aolPercentages.inbox}%`,
+                                        }}
+                                    ></div>
+                                </div>
+                                <p className="mt-1 text-xs text-gray-600">
+                                    Inbox: <span className="font-bold text-green-500">{aolPercentages.inbox}%</span>,
+                                    Spam: <span className="font-bold text-red-500">{aolPercentages.spam}%</span>
+                                </p>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -604,6 +689,7 @@ export default function TestingSection() {
                             setSelectedTabZohoUser3("All");
                             setSelectedTabYandexUser1("All");
                             setSelectedTabYandexUser2("All");
+                            setSelectedTabAolUser1("All");
                         }}
                         className="relative px-6 py-2 bg-gradient-to-r from-blue-400 to-blue-600 text-white rounded-full shadow-lg hover:from-blue-500 hover:to-blue-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-blue-300 focus:outline-none"
                     >
@@ -626,6 +712,7 @@ export default function TestingSection() {
                             setSelectedTabZohoUser3("Inbox");
                             setSelectedTabYandexUser1("Inbox");
                             setSelectedTabYandexUser2("Inbox");
+                            setSelectedTabAolUser1("Inbox");
                         }}
                         className="relative px-6 py-2 bg-gradient-to-r from-green-400 to-green-600 text-white rounded-full shadow-lg hover:from-green-500 hover:to-green-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-green-300 focus:outline-none"
                     >
@@ -648,6 +735,7 @@ export default function TestingSection() {
                             setSelectedTabZohoUser3("Spam");
                             setSelectedTabYandexUser1("Spam");
                             setSelectedTabYandexUser2("Spam");
+                            setSelectedTabAolUser1("Spam");
                         }}
                         className="relative px-6 py-2 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-lg hover:from-red-500 hover:to-red-700 transition duration-300 transform hover:scale-105 focus:ring-4 focus:ring-red-300 focus:outline-none"
                     >
@@ -702,6 +790,15 @@ export default function TestingSection() {
                             } transition duration-300`}
                     >
                         Yandex
+                    </button>
+                    <button
+                        onClick={() => setSelectedProvider("aol")}
+                        className={`px-6 py-2 rounded-full shadow-lg ${selectedProvider === "aol"
+                            ? "bg-red-500 text-white"
+                            : "bg-gray-200 text-gray-800 hover:bg-red-400 hover:text-white"
+                            } transition duration-300`}
+                    >
+                        Aol
                     </button>
                 </div>
 
@@ -893,6 +990,24 @@ export default function TestingSection() {
                                 image={YandexImage}
                                 isLoading={isLoadingYandex && isFirstLoadYandex}
                                 isRealtimeLoader={isRealtimeLoaderYandex}
+                                setSearchQuery={setSearchQuery}
+                            />
+                        </>
+                    ) : null}
+
+                    {/* AOL */}
+                    {selectedProvider === "all" || selectedProvider === "aol" ? (
+                        <>
+                            <EmailSection
+                                accountEmail="cinthianicola@aol.com"
+                                ageOfEmail="6 Years Old"
+                                selectedTab={selectedTabAolUser1}
+                                setSelectedTab={setSelectedTabAolUser1}
+                                tabs={tabs}
+                                filteredTabResults={filteredEmails.aol[0]}
+                                image={AolImage}
+                                isLoading={isLoadingAol && isFirstLoadAol}
+                                isRealtimeLoader={isRealtimeLoaderAol}
                                 setSearchQuery={setSearchQuery}
                             />
                         </>

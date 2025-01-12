@@ -1,0 +1,1 @@
+- http://localhost:3335/api/auth/google to get token for that particular mail if expires
