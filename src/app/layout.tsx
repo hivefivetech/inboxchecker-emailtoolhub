@@ -5,9 +5,9 @@ import "./globals.css";
 const geistSans = Geist({ subsets: ["latin"], variable: "--font-geist-sans" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono" });
 
-export const metadata: Metadata = {
-  title: "Inbox Checker",
-  description: "Check if your emails land in inboxes with a modern tool.",
+export const metadata = {
+  title: "Email Deliverability Checker: Ensure Inbox Placement",
+  description: "Use our free tool to verify if your emails reach the inbox or get marked as spam. Improve your email campaigns with accurate deliverability insights.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
