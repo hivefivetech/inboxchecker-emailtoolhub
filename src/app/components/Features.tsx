@@ -19,6 +19,7 @@ const allEmails = [
     "pollywilmar@zohomail.in",
     "awesome.jamii@yandex.com",
     "boudreauryan@yandex.com",
+    "cinthianicola@aol.com",
 ];
 
 export default function Features() {
