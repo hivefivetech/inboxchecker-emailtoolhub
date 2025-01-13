@@ -514,7 +514,7 @@ export default function TestingSection() {
                     See where your emails are landing — Inbox, Spam, and more.
                 </p>
 
-                <motion.div
+                {/* <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5 }}
@@ -528,7 +528,7 @@ export default function TestingSection() {
                     <p className="font-semibold text-[12px]">
                         ⚠️ Website servers are currently being updated, which may cause delays or issues while checking your inbox. We appreciate your patience!
                     </p>
-                </motion.div>
+                </motion.div> */}
 
                 {/* Search Input */}
                 <div className="flex justify-center items-center mb-6 px-4 max-w-5xl mx-auto">

@@ -46,7 +46,7 @@ export default function Home() {
         </motion.div>
       )}
       {/* Notice Section */}
-      <div className="fixed bottom-3 w-full left-[25%]">
+      {/* <div className="fixed bottom-3 w-full left-[25%]">
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -57,7 +57,7 @@ export default function Home() {
             ⚠️ Website servers are currently being updated, which may cause delays or issues while checking your inbox. We appreciate your patience!
           </p>
         </motion.div>
-      </div>
+      </div> */}
     </div>
   );
 }
